@@ -2,25 +2,25 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from '/public/assets/logo.png'
 import { Button } from "./ui/button";
+import { ModeToggle } from "./ui/ModeToggle";
 
 const Navbar = () => {
   return (
-    <nav className="top-0 py-3 z-[1000]">
+    <nav className="sticky top-0 py-3 z-[1000]">
       <div className="container px-4 mx-auto relative text-sm">
         <div className="flex justify-between items-center">
-          <Link className="hover:cursor-pointer" href={"/"}>
+          <Link href="/" className="hover:cursor-pointer">
             <Image
-              
               src={Logo}
               alt="Logo"
-              // unoptimized
-              className="h-8 w-auto ml-28 mt-4 cursor-pointer"
+              className="h-8 w-auto ml-4 md:ml-28 mt-4 cursor-pointer"
             />
           </Link>
-          <ul className="hidden lg:flex ml-14 mr-28 space-x-10 mt-4 text-14px">
-            <li className="nav-item cursor-pointer"><Button variant="link">Login</Button></li>
-            <li className="nav-item cursor-pointer"><Button variant="link" >Sign up</Button></li>
-          </ul>
+          <div className="flex items-center space-x-4 mt-4">
+            <Button variant="link" className=""><Link href="/login">Login</Link></Button>
+            <Button variant="link" className="text-imagine-blue"><Link href="/signup">Sign up</Link></Button>
+            <ModeToggle />
+          </div>
         </div>
       </div>
     </nav>
