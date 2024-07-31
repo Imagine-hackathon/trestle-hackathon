@@ -59,6 +59,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const items = [
   {
@@ -129,9 +131,10 @@ export default function CreateJob() {
       salary: "",
     },
   });
-  const onSubmit = (e: z.infer<typeof FormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     console.log("Form submitted");
-    console.log(e);
+    console.log(data);
+    await setDoc(doc(db, "jobs"), data);
   };
 
   return (

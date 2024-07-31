@@ -2,15 +2,13 @@ import React from "react";
 import TotalResponse from "./total-response";
 import JobListing from "./job-listing";
 
-type Props = {};
+type Props = {
+  table: [];
+  adminData: {};
+};
 
-const ResponseList = (props: Props) => {
-  return (
-    <div className="flex gap-2 sm:flex-4 flex-col sm:flex-row">
-      <TotalResponse />
-      <JobListing />
-    </div>
-  );
+const ResponseList = ({ adminData, table }: Props) => {
+  return <h1>hello</h1>;
 };
 
 export default ResponseList;

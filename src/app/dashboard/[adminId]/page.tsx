@@ -1,73 +1,65 @@
 "use client";
 import Link from "next/link";
-import {
-  Bell,
-  CircleUser,
-  Home,
-  Menu,
-  Package,
-  Package2,
-  PanelLeft,
-  PlusCircle,
-  Search,
-  ShoppingCart,
-  Users,
-  Users2,
-} from "lucide-react";
+import { PlusCircle } from "lucide-react";
 
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Label,
-  LabelList,
-  Line,
-  LineChart,
-  PolarAngleAxis,
-  RadialBar,
-  RadialBarChart,
-  Rectangle,
-  ReferenceLine,
-  XAxis,
-  YAxis,
-} from "recharts";
-
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import Lottie from "lottie-react";
-import { Badge } from "@/components/ui/badge";
-import StatCard from "./stat-card";
-import TotalResponse from "./total-response";
-import JobListing from "./job-listing";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import Image from "next/image";
 import Hero from "./hero";
-import StatList from "./stat-list";
 import ResponseList from "./response-list";
 import Sidebar from "./sidebar";
 import Header from "./header";
+import { useEffect, useState } from "react";
+import TotalResponse from "./total-response";
+import JobListing from "./job-listing";
 
+export interface ListingResponse {
+  status: number;
+  response: {
+    ratings: {
+      overallFit: number;
+      skillsMatch: number;
+      experienceMatch: number;
+      educationMatch: number;
+    };
+    merits: string[];
+    demerits: string[];
+  };
+}
+export interface Jobs {
+  role: string;
+  applicants: string;
+  status: string;
+  location: string;
+}
 export default function Dashboard() {
+  const [table, setTable] = useState<Jobs[] | []>([]);
+  const [adminData, setAdmin] = useState({});
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch(
+          "https://image-sharing-api-ten.vercel.app/myunsplash/create"
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        setTable(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchJobs();
+
+    const getAmin = async () => {
+      try {
+        const res = await fetch("11");
+        if (!res.ok) return;
+        const data = await res.json();
+        setAdmin(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  }, []);
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <Sidebar />
@@ -78,7 +70,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <h1 className="text-lg font-semibold md:text-2xl">Dashboard</h1>
 
-            <Link href={"/job/create"}>
+            <Link href={"/jobportal/create"}>
               <Button size="sm" className="h-8 gap-1">
                 <PlusCircle className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -88,7 +80,10 @@ export default function Dashboard() {
             </Link>
           </div>
           <Hero />
-          <ResponseList />
+          <div className="flex gap-2 sm:flex-4 flex-col sm:flex-row">
+            <TotalResponse />
+            <JobListing table={table} />
+          </div>
         </main>
       </div>
     </div>

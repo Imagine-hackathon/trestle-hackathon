@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -61,8 +62,40 @@ import {
 } from "@/components/ui/tooltip";
 import Header from "./header";
 import Summary from "./summary";
+import { useEffect, useState } from "react";
+import { ListingResponse } from "@/app/dashboard/[adminId]/page";
 
 export default function Dashboard() {
+  const [table, setTable] = useState<ListingResponse[] | []>([]);
+  const [adminData, setAdmin] = useState({});
+  let summary = "";
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch(
+          "https://image-sharing-api-ten.vercel.app/myunsplash/create"
+        );
+        if (!res.ok) return;
+        console.log(res);
+        const data = await res.json();
+        setTable(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchJobs();
+
+    const getAmin = async () => {
+      try {
+        const res = await fetch("11");
+        if (!res.ok) return;
+        const data = await res.json();
+        setAdmin(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  }, []);
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -126,68 +159,85 @@ export default function Dashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        {/* <TableHead className="hidden w-[100px] sm:table-cell">
-                          <span className="sr-only">Image</span>
-                        </TableHead> */}
                         <TableHead>Client Name</TableHead>
                         <TableHead>Client Email</TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Match
-                        </TableHead>
-                        {/* <TableHead className="hidden md:table-cell">
-                          Total Sales
-                        </TableHead> */}
-
-                        <TableHead className="hidden md:table-cell">
-                          Summary
+                          Skill Match
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Created at
+                          Experience Match
                         </TableHead>
-                        <TableHead>
-                          <span className="sr-only">Actions</span>
+                        <TableHead className="hidden md:table-cell">
+                          Education Match
+                        </TableHead>
+                        <TableHead className="hidden md:table-cell">
+                          Merits
+                        </TableHead>
+                        <TableHead className="hidden md:table-cell">
+                          Demerits{" "}
                         </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          Laser Lemonade Machine
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">Draft</Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          80%
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          <Summary summary="HEllo I am summary">
-                            <Button variant="outline">Show Summary</Button>
-                          </Summary>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-07-12 10:42 AM
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Accept</DropdownMenuItem>
-                              <DropdownMenuItem>Decline</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
+                      {table.map((row) => {
+                        return (
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              User name
+                            </TableCell>
+                            <TableCell>User email</TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {row.response.ratings.overallFit}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {row.response.ratings.skillsMatch}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {row.response.ratings.experienceMatch}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {row.response.ratings.educationMatch}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {
+                                <Summary
+                                  summary={row.response.merits
+                                    .map((msg) => {
+                                      let temp = "";
+                                      summary += "\n" + msg;
+                                      temp = summary;
+                                      summary = "";
+
+                                      return temp;
+                                    })
+                                    .toString()}
+                                >
+                                  <Button variant="outline">Merits</Button>
+                                </Summary>
+                              }
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {
+                                <Summary
+                                  summary={row.response.demerits
+                                    .map((msg) => {
+                                      let temp = "";
+                                      summary += "\n" + msg;
+                                      temp = summary;
+                                      summary = "";
+
+                                      return temp;
+                                    })
+                                    .toString()}
+                                >
+                                  <Button variant="outline">Demerits</Button>
+                                </Summary>
+                              }
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+
                       <TableRow>
                         <TableCell className="font-medium">
                           Hypernova Headphones
@@ -231,8 +281,8 @@ export default function Dashboard() {
                 </CardContent>
                 <CardFooter>
                   <div className="text-xs text-muted-foreground">
-                    Showing <strong>1-10</strong> of <strong>32</strong>{" "}
-                    products
+                    Showing <strong>{table.length}</strong> of{" "}
+                    <strong>{table.length}</strong> jobs
                   </div>
                 </CardFooter>
               </Card>
