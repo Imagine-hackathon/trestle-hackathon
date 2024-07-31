@@ -60,7 +60,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { addJob } from "@/lib/firebase/jobs";
+import { JobListingProps } from "@/components/JobListings";
 
 const items = [
   {
@@ -133,8 +134,8 @@ export default function CreateJob() {
   });
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     console.log("Form submitted");
-    console.log(data);
-    await setDoc(doc(db, "jobs"), data);
+    const res = await addJob(data as unknown as JobListingProps);
+    console.log(res);
   };
 
   return (
