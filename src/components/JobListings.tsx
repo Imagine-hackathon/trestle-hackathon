@@ -134,7 +134,7 @@ export const JobListing = (props: JobListingProps) => {
         {props.description.map((des, key) => {
           // eslint-disable-next-line react/jsx-key
           return (
-            <li className="flex items-center -mt-2 text-gray-500">
+            <li className="flex items-center -mt-2 text-gray-500" key={key}>
               <Dot size={40}></Dot>
               {des}
             </li>

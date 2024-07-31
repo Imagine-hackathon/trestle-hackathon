@@ -68,6 +68,7 @@ export function JobApply() {
       description: "Your job application has been received successfully.",
     })
     
+    
     // Reset form after submission
     setFormData({
       name: "",
