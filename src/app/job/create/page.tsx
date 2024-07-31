@@ -56,10 +56,84 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Checkbox } from "@/components/ui/checkbox";
 
+const items = [
+  {
+    id: "recents",
+    label: "Recents",
+  },
+  {
+    id: "home",
+    label: "Home",
+  },
+  {
+    id: "applications",
+    label: "Applications",
+  },
+  {
+    id: "desktop",
+    label: "Desktop",
+  },
+  {
+    id: "downloads",
+    label: "Downloads",
+  },
+  {
+    id: "documents",
+    label: "Documents",
+  },
+] as const;
+
+type formSchema = {
+  company: string;
+  role: string;
+  location: string;
+  joblocation: string;
+  salary: string;
+  experience: string;
+  applicants: string;
+  timeposted: number;
+  imageurl?: string;
+  description: string;
+};
 export default function CreateJob() {
-  const form = useForm();
-  const onSubmit = () => {};
+  const FormSchema = z.object({
+    company: z.string(),
+    role: z.string(),
+    location: z.string(),
+    joblocation: z.string(),
+    applicants: z.string(),
+    timeposted: z.string(),
+    experience: z.string(),
+    description: z.string(),
+    imageurl: z.string().optional(),
+    type: z.string(),
+    salary: z.string(),
+  });
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      company: "",
+      role: "",
+      location: "",
+      joblocation: "",
+      applicants: "",
+      timeposted: "",
+      experience: "",
+      description: "",
+      imageurl: "",
+      type: "",
+      salary: "",
+    },
+  });
+  const onSubmit = (e: z.infer<typeof FormSchema>) => {
+    console.log("Form submitted");
+    console.log(e);
+  };
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -146,10 +220,10 @@ export default function CreateJob() {
                         <div className="flex  gap-4">
                           <FormField
                             control={form.control}
-                            name="title"
+                            name="company"
                             render={({ field }) => (
                               <FormItem className="sm:flex-[0.8] col-span-12 ">
-                                <FormLabel>Job Title</FormLabel>
+                                <FormLabel>Company Name</FormLabel>
                                 <FormControl>
                                   <Input
                                     className="sm:col-span-3 col-span-12 "
@@ -157,76 +231,141 @@ export default function CreateJob() {
                                     {...field}
                                   />
                                 </FormControl>
-                                <FormDescription>
-                                  {/* This is your public display name. */}
-                                </FormDescription>
+
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-
                           <FormField
                             control={form.control}
-                            name="openings"
+                            name="role"
                             render={({ field }) => (
-                              <FormItem className="sm:flex-[0.2] flex-1">
-                                <FormLabel>Openings</FormLabel>
+                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                                <FormLabel>Role</FormLabel>
                                 <FormControl>
                                   <Input
-                                    id="openings"
-                                    type="number"
-                                    className="sm:col-span-1 col-span-12"
-                                    defaultValue="10"
+                                    className="sm:col-span-3 col-span-12 "
+                                    placeholder="Full Stack developer needed"
                                     {...field}
                                   />
                                 </FormControl>
-                                <FormDescription>
-                                  {/* This is your public display name. */}
-                                </FormDescription>
+
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex  gap-4">
                           <FormField
                             control={form.control}
-                            name="catgeory"
+                            name="location"
                             render={({ field }) => (
-                              <FormItem className="flex-1 sm:flex-[0.4]">
-                                <FormLabel>Category</FormLabel>
+                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                                <FormLabel>Locaion</FormLabel>
                                 <FormControl>
-                                  <CustomSelect
-                                    items={[
-                                      "Full Time",
-                                      "Part Time",
-                                      "Internship",
-                                      "Remote",
-                                    ]}
-                                    className="sm:w-full w-[180px]"
-                                    label="category"
-                                    placeholder="Pick category"
+                                  <Input
+                                    className="sm:col-span-3 col-span-12 "
+                                    placeholder="Full Stack developer needed"
+                                    {...field}
                                   />
                                 </FormControl>
-                                <FormDescription>
-                                  {/* This is your public display name. */}
-                                </FormDescription>
+
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
                           <FormField
                             control={form.control}
-                            name="date"
+                            name="joblocation"
                             render={({ field }) => (
-                              <FormItem className="flex-1 sm:flex-[0.4]">
-                                <FormLabel>Date</FormLabel>
+                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                                <FormLabel>Job Location</FormLabel>
                                 <FormControl>
-                                  <DatePickerWithRange />
+                                  <Input
+                                    className="sm:col-span-3 col-span-12 "
+                                    placeholder="Full Stack developer needed"
+                                    {...field}
+                                  />
                                 </FormControl>
-                                <FormDescription>
-                                  {/* This is your public display name. */}
-                                </FormDescription>
+
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="flex  gap-4">
+                          <FormField
+                            control={form.control}
+                            name="type"
+                            render={({ field }) => (
+                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                                <FormLabel>Type</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    className="sm:col-span-3 col-span-12 "
+                                    placeholder="Full Stack developer needed"
+                                    {...field}
+                                  />
+                                </FormControl>
+
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="applicants"
+                            render={({ field }) => (
+                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                                <FormLabel>Applicants</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    className="sm:col-span-3 col-span-12 "
+                                    placeholder="Full Stack developer needed"
+                                    {...field}
+                                    type="number"
+                                  />
+                                </FormControl>
+
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="flex  gap-4">
+                          <FormField
+                            control={form.control}
+                            name="salary"
+                            render={({ field }) => (
+                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                                <FormLabel>Salary</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    className="sm:col-span-3 col-span-12 "
+                                    {...field}
+                                    type="string"
+                                  />
+                                </FormControl>
+
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="experience"
+                            render={({ field }) => (
+                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                                <FormLabel>Experience</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    className="sm:col-span-3 col-span-12 "
+                                    placeholder="Full Stack developer needed"
+                                    {...field}
+                                  />
+                                </FormControl>
+
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -236,16 +375,19 @@ export default function CreateJob() {
                         <div className="">
                           <FormField
                             control={form.control}
-                            name="file"
+                            name="imageurl"
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel>Upload file</FormLabel>
                                 <FormControl>
-                                  <Input id="picture" type="file" {...field} />
+                                  <Input
+                                    id="picture"
+                                    accept=".jpg, .jpeg, .png"
+                                    type="file"
+                                    {...field}
+                                  />
                                 </FormControl>
-                                <FormDescription>
-                                  {/* This is your public display name. */}
-                                </FormDescription>
+
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -254,7 +396,7 @@ export default function CreateJob() {
                         <div>
                           <FormField
                             control={form.control}
-                            name="message"
+                            name="description"
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel>Description</FormLabel>
@@ -266,25 +408,18 @@ export default function CreateJob() {
                                     {...field}
                                   />
                                 </FormControl>
-                                <FormDescription>
-                                  {/* This is your public display name. */}
-                                </FormDescription>
+
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
                         </div>
+                        <Button type="submit">Submit</Button>
                       </form>
                     </Form>
                   </CardContent>
                 </Card>
               </div>
-            </div>
-            <div className="flex items-center justify-center gap-2 md:hidden">
-              <Button variant="outline" size="sm">
-                Discard
-              </Button>
-              <Button size="sm">Save Product</Button>
             </div>
           </div>
         </main>
