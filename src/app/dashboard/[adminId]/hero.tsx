@@ -15,9 +15,9 @@ const Hero = (props: Props) => {
         <p className="text-white font-medium leading-8 text-3xl">
           Welcome to Imagine
         </p>
-        <h3 className="text-3xl font-extrabold text-white ">
-          {user?.displayName}
-        </h3>
+
+        <h3 className="text-3xl font-extrabold text-white ">{user?.displayName||user?.displayEmail}</h3>
+
       </div>
       <div className="flex-1 justify-end h-full w-56  flex items-center ">
         <Lottie

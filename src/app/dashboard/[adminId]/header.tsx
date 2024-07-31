@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { signOut } from "@/lib/firebase/auth";
+import { AuthorizationContext } from "@/lib/userContext";
 import {
   Badge,
   CircleUser,
@@ -20,13 +22,15 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useContext } from "react";
 import { LineChart } from "recharts";
 
 type Props = {};
 
 const Header = (props: Props) => {
+  const {user, loading} = useContext(AuthorizationContext)
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
@@ -116,8 +120,8 @@ const Header = (props: Props) => {
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="secondary" size="icon" className="rounded-full">
-            <CircleUser className="h-5 w-5" />
+          <Button variant="secondary" size="icon" className="rounded-full overflow-hidden">
+            {user?.photoURL?<Image className="h-10 w-10" height={50} width={50} alt="profile-image" src={user?.photoURL}></Image>:<CircleUser className="h-5 w-5" />}
             <span className="sr-only">Toggle user menu</span>
           </Button>
         </DropdownMenuTrigger>
@@ -127,7 +131,7 @@ const Header = (props: Props) => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={()=>signOut()}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

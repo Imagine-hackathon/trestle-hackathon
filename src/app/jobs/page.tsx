@@ -66,9 +66,7 @@ const FilterList = (props: FilterListProps) => {
               value={props.filters[props.filterName] as string}
               onChange={(e) => props.handleFilterChange(props.filterName, e.target.value)}
             />
-            <Button>
-              <Search></Search>
-            </Button>
+           
           </div>
           {Array.isArray(props.filters[props.filterName]) && (
             <div className="flex flex-wrap mt-2 mb-2">
@@ -193,7 +191,7 @@ const Jobs = () => {
       (filters.company === '' || job.company.toLowerCase().includes(filters.company.toLowerCase()))
     );
   });
-  
+
   return (
     <div>
       <header className="container px-4 mx-auto ">

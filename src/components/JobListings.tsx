@@ -134,6 +134,7 @@ export const JobListing = (props: JobListingProps) => {
         {props.description.map((des, key) => {
           // eslint-disable-next-line react/jsx-key
           return (
+            // eslint-disable-next-line react/jsx-key
             <li className="flex items-center -mt-2 text-gray-500">
               <Dot size={40}></Dot>
               {des}
@@ -142,13 +143,12 @@ export const JobListing = (props: JobListingProps) => {
         })}
       </ul>
       <div className="flex flex-row items-center justify-between">
-        <p className="text-slate-400">{props.applicants} applicants</p>
-        <div className="flex items-center gap-6">
-          <Button className="px-8 py-2" variant="outline">
-            Save
-          </Button>
-          <JobApply />
-        </div>
+      <p className="text-slate-400">{props.applicants} applicants</p>
+      <div className="flex items-center gap-6">
+        
+        <JobApply />
+       
+      </div>
       </div>
     </Card>
   );
