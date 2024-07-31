@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
+import { JobApply } from "./JobApply";
 
 export interface JobListingProps {
   company: string;
@@ -146,7 +147,7 @@ export const JobListing = (props: JobListingProps) => {
           <Button className="px-8 py-2" variant="outline">
             Save
           </Button>
-          <Button className=" px-5 py-2  bg-imagine-blue">Apply Now</Button>
+          <JobApply />
         </div>
       </div>
     </Card>

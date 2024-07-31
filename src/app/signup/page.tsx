@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,34 +21,91 @@ import {
 import GoogleLogo from '/public/assets/google_icon.svg'
 import PlaceholderImage from '/public/assets/jobrec.svg'
 
-const Signup: React.FC = () => {
+import { createUserWithEmailAndPassword, signInWithGoogle, updateProfile } from "@/lib/firebase/auth";
+import { AuthorizationContext } from "@/lib/userContext";
+
+const SignUp: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>(""); // Add this line
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [error, setError] = useState<string>(""); // Add this line
   const router = useRouter();
-  const [errorMessage, setErrorMessage] = useState<string>("");
-
-  const handleSignup = async (event: React.FormEvent) => {
+  
+  const handleSignUp = async (event: React.FormEvent) => {
     event.preventDefault();
-    setErrorMessage("");
-    
+    setError(""); // Clear any previous errors
+
+    // Check if passwords match
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match. Please try again.");
+      setError("Passwords do not match");
       return;
     }
 
-    // Simulated successful signup
-    if (email === "newuser@example.com" && password === "password") {
-      router.push("/");
-    } else {
-      setErrorMessage("An error occurred during signup. Please try again.");
+    try {
+      const userCredential: any = await createUserWithEmailAndPassword({email, password});
+      const user = userCredential?.user;
+      if (!user){
+        setError('An error occurred: ' + userCredential?.error);
+        return;
+      }
+      await updateProfile(user,`${firstName} ${lastName}`);
+      
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error signing up with email and password", error);
+        setError(error.message);
+      } else {
+        console.error("Unknown error", error);
+        setError("An unknown error occurred");
+      }
     }
   };
 
-  const handleGoogleSignup = async () => {
-    setErrorMessage("");
-    router.push("/");
+  const handleGoogleSignUp = async () => {
+    try {
+      const valid = await signInWithGoogle();
+      if (valid){
+        
+      } else {
+        setError('Invalid credentials');
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error signing in with Google", error);
+        setError(error.message);
+      } else {
+        console.error("Unknown error", error);
+        setError("An unknown error occurred");
+      }
+    }
   };
+
+  const userCred = useContext(AuthorizationContext);
+  const user = userCred?.user; // works even if context is not defined
+  const userLoading = userCred?.loading;
+
+  // Effects
+  useEffect(() => {
+    if (userLoading) {
+      // don't do anything if user is not confirmed
+      return;
+    }
+    if (user === undefined) {
+      // user is still not confirmed. Keep the loading page.
+      return;
+    }
+    if (user === null && !userLoading) {
+      // We have finished verifying but the user does not exist / no signin info
+      // Finish waiting
+      
+      return;
+    }
+    // Navigate automatically to the dashboard. We don't want to display the signin to someone already signed in if by mistake.
+    router.push(`/dashboard/${user?.uid}`)
+  }, [user, userLoading, router]);
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -83,10 +140,8 @@ const Signup: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {errorMessage && (
-                  <div className="mb-4 text-red-500 text-sm">{errorMessage}</div>
-                )}
-                <form onSubmit={handleSignup} className="space-y-4">
+               
+                <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
                     <Input
@@ -126,7 +181,7 @@ const Signup: React.FC = () => {
                     className="w-full"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleGoogleSignup();
+                      handleGoogleSignUp();
                     }}
                   >
                     <Image
@@ -154,4 +209,4 @@ const Signup: React.FC = () => {
   );
 };
 
-export default Signup;
+export default SignUp;
