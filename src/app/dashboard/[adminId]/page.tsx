@@ -66,8 +66,16 @@ import StatList from "./stat-list";
 import ResponseList from "./response-list";
 import Sidebar from "./sidebar";
 import Header from "./header";
+import { AuthContext, AuthorizationContext } from "@/lib/userContext";
+import { getAuthenticatedAppForUser } from "@/lib/firebase/firebaseserver";
+import { useContext } from "react";
+
+
 
 export default function Dashboard() {
+  const {user, loading} = useContext(AuthorizationContext)
+
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <Sidebar />
@@ -87,7 +95,7 @@ export default function Dashboard() {
               </Button>
             </Link>
           </div>
-          <Hero />
+          <Hero></Hero>
           <ResponseList />
         </main>
       </div>

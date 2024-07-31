@@ -2,6 +2,7 @@ import { Briefcase, BriefcaseBusiness, Circle, CircleAlert, Clock, Clock1, Dolla
 import Image from "next/image";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
+import { JobApply } from "./JobApply";
 
 
 interface JobListingProps {
@@ -122,7 +123,8 @@ export const JobListing = (props: JobListingProps) => {
       <p className="text-slate-400">{props.applicants} applicants</p>
       <div className="flex items-center gap-6">
         <Button className="px-8 py-2" variant="outline" >Save</Button>
-        <Button className=" px-5 py-2  bg-imagine-blue">Apply Now</Button>
+        <JobApply />
+       
       </div>
       </div>
     </Card>
