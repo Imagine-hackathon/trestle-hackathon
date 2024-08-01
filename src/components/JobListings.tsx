@@ -170,7 +170,7 @@ export const JobListing = (props: JobListingProps) => {
           <Users size={18} />
           <span>{props.applicants} applicants</span>
         </div>
-        <JobApply />
+        <JobApply data={props} />
       </CardFooter>
     </Card>
   );
