@@ -9,7 +9,7 @@ import {
 } from "@/lib/firebase/jobs";
 import { useEffect, useState } from "react";
 
-const page = ({ params }: { params: { jobId: string } }) => {
+const Page = ({ params }: { params: { jobId: string } }) => {
   const [applications, setApplicatinos] = useState<
     { id: string; data: ApplicationType }[]
   >([]);
@@ -27,7 +27,7 @@ const page = ({ params }: { params: { jobId: string } }) => {
           .catch((e) => toast({ title: "Error", description: e.message }));
       })
       .catch((e) => toast({ title: "Error", description: e.message }));
-  }, []);
+  }, [params.jobId]);
   return (
     <div>
       {JSON.stringify(applications)}
@@ -36,4 +36,4 @@ const page = ({ params }: { params: { jobId: string } }) => {
   );
 };
 
-export default page;
+export default Page;

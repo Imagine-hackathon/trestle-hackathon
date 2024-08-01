@@ -24,7 +24,7 @@ export default function RootLayout({
     }
     // reroute to signup / signin
     router.push("/login");
-  }, [user, loading]);
+  }, [user, loading, router]);
   return loggedInComplete ? (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar />
