@@ -311,7 +311,7 @@ const Jobs = () => {
         );
       })
       .catch((e: any) => console.log(e));
-  }, [user, filters, sortBy]);
+  }, [user, filters, sortBy, loading]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
