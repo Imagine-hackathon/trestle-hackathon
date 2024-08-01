@@ -32,7 +32,7 @@ interface JobListingProps {
 
   description: string[];
   applicants: number;
-  timeCreated: number;
+  timeCreated: any;
   imageurl?: string;
 }
 
@@ -205,7 +205,7 @@ const Jobs = () => {
     },
   ];
 
-  const [sortBy, setSortBy] = useState<"salary" | "Date Posted" | null>(null);
+  const [sortBy, setSortBy] = useState<"Salary" | "Date Posted" | null>(null);
   const [jobList, setJobList] = useState<JobListingProps[]>();
   const [filteredJobs, setFilteredJobs] = useState<JobListingProps[]>();
   const { user, loading } = useContext(AuthorizationContext);
@@ -247,6 +247,17 @@ const Jobs = () => {
             (filters.company === "" ||
               job.company.toLowerCase().includes(filters.company.toLowerCase()))
           );
+        }).sort((a, b)=>{
+          if (sortBy === null){
+            return 0
+          }
+          else {
+            if (sortBy === 'Salary'){
+              return b.salary - a.salary
+            } else {
+              return a.timeCreated.seconds - b.timeCreated.seconds
+            }
+            }
         })
       );
       return;
@@ -279,11 +290,22 @@ const Jobs = () => {
                   .toLowerCase()
                   .includes(filters.company.toLowerCase()))
             );
+          }).sort((a: JobListingProps, b: JobListingProps)=>{
+            if (sortBy === null){
+              return 0
+            }
+            else {
+              if (sortBy === 'Salary'){
+                return b.salary - a.salary
+              } else {
+                return a.timeCreated.seconds - b.timeCreated.seconds
+              }
+              }
           })
         );
       })
       .catch((e: any) => console.log(e));
-  }, [user, filters]);
+  }, [user, filters, sortBy]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -321,7 +343,7 @@ const Jobs = () => {
                   <p className="text-sm text-gray-500">Sort by:</p>
                   <Select
                     onValueChange={(value) =>
-                      setSortBy(value as "salary" | "Date Posted" | null)
+                      setSortBy(value as "Salary" | "Date Posted" | null)
                     }
                     value={sortBy || undefined}
                   >
