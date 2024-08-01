@@ -17,7 +17,7 @@ const Sidebar = (props: Props) => {
       name: "postjob",
       icon: Briefcase,
       label: "Post Job",
-      link: "/jobpostings",
+      link: "/jobportal/create",
     },
     {
       name: "applications",
