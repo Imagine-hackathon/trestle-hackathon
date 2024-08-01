@@ -110,6 +110,7 @@ export const JobListing = ({
   jobDetails: JobListingProps;
   id: string;
 }) => {
+  console.log(jobDetails);
   return (
     <Card className="w-full overflow-hidden transition-all duration-300 hover:shadow-lg">
       <CardHeader className="pb-2">

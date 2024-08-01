@@ -65,7 +65,7 @@ const Navbar = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Link href={`/dashboard/${user?.uid}`} className=" text-blue-600 hover:animate-pulse hover:underline px-2 py-2 rounded-2xl">Dashboard</Link>
+              <Link href={`/dashboard`} className=" text-blue-600 hover:animate-pulse hover:underline px-2 py-2 rounded-2xl">Dashboard</Link>
             </div>
           ) : (
             <div className="flex items-center space-x-4 mt-4">
