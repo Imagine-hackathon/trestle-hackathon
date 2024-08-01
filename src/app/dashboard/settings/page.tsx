@@ -1,10 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 import Link from "next/link"
 import { CircleUser, Menu, Package2, Search } from "lucide-react"
 import { CheckedState } from "@radix-ui/react-checkbox";
+
+import { usePathname } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -39,6 +41,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false)
   const { register, handleSubmit, formState: { errors } } = useForm()
 
+  const { user } = useContext(AuthorizationContext)
+
   const onSubmit = async (data: any) => {
     setLoading(true)
     try {
@@ -53,7 +57,7 @@ export default function Dashboard() {
         useAsDefault: useAsDefault
       }
 
-      await saveCompanyData(companyData)
+      await saveCompanyData(companyData, user.uid)
 
       toast({
         title: "Success",
@@ -70,6 +74,8 @@ export default function Dashboard() {
       setLoading(false)
     }
   }
+  const pathname = usePathname()
+
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -79,14 +85,19 @@ export default function Dashboard() {
         </div>
         <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
           <nav className="grid gap-4 text-sm text-muted-foreground">
-            <Link href="#" className="font-semibold text-primary">
+          <Link 
+              href="./settings" 
+              className={`font-semibold ${pathname === '/settings' ? 'text-primary' : ''}`}
+            >
               General
             </Link>
-            <Link href="">Security</Link>
-            <Link href="#">Integrations</Link>
-            <Link href="#">Support</Link>
-            <Link href="#">Organizations</Link>
-            <Link href="#">Advanced</Link>
+            <Link 
+              href="./preferences"
+              className={`font-semibold ${pathname === '/preferences' ? 'text-primary' : ''}`}
+            >
+              Preferences
+            </Link>
+
           </nav>
           <div className="grid gap-6">
             <form onSubmit={handleSubmit(onSubmit)}>

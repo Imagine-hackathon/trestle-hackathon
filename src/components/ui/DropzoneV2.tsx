@@ -52,7 +52,7 @@ export default function DropzoneV2(props: DropzoneProps) {
          console.log('saved url')
       }
     );
-  }, []);
+  }, [props]);
   const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
     useDropzone({
       onDrop,

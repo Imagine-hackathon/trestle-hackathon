@@ -32,6 +32,7 @@ export default function CustomSelect({
         <SelectGroup>
           <SelectLabel>{label}</SelectLabel>
           {items.map((item) => (
+            // eslint-disable-next-line react/jsx-key
             <SelectItem value={item.toLowerCase()}>{item}</SelectItem>
           ))}
         </SelectGroup>

@@ -168,6 +168,7 @@ export default function Dashboard() {
                       {table.map((job) => {
                         const row = job.data;
                         return (
+                          // eslint-disable-next-line react/jsx-key
                           <Link href={"/dashboard/applications/" + job.id}>
                             <TableRow>
                               <TableCell className="font-medium">

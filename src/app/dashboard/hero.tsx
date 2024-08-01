@@ -35,7 +35,7 @@ const Hero = (props: Props) => {
       }
     };
     getCount();
-  }, []);
+  }, [user.uid]);
 
   return (
     <Card className="p-6 sm:p-8 rounded-2xl shadow-lg bg-white dark:bg-gray-800 transition-all duration-300">

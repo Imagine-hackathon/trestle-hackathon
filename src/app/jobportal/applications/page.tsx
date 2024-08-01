@@ -179,9 +179,9 @@ export default function Dashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {table.map((row) => {
+                      {table.map((row, index) => {
                         return (
-                          <TableRow key={}>
+                          <TableRow key={index}>
                             <TableCell className="font-medium">
                               User name
                             </TableCell>
