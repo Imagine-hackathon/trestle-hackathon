@@ -19,11 +19,12 @@ export async function POST(req: Request) {
   const formData = await req.formData();
 
   const cv = formData.get("cv") as Blob;
-  console.log("cv", cv);
+
   const jd = formData.get("jd");
-  console.log("jd", jd);
+  const jobId = formData.get("jobId");
+
   const applicationId = formData.get("applicationId") as string;
-  console.log("applicationId", applicationId);
+  console.log("jobId", jobId);
 
   const loader = new PDFLoader(cv, {
     splitPages: false,
@@ -73,7 +74,7 @@ export async function POST(req: Request) {
   const aiAnalysis = JSON.parse(res?.content as string) as
     | string
     | ListingResponse;
-  await addAIOUTPUt({ applicationId, aiAnalysis });
+  await addAIOUTPUt({ applicationId, aiAnalysis, jobId: jobId as string });
 
   return NextResponse.json({
     status: 200,

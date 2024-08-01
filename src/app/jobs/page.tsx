@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { fetchAndReturn } from "@/lib/firebase/fetchData";
+import { getAllJobs } from "@/lib/firebase/jobs";
 
 interface JobListingProps {
   company: string;
@@ -205,21 +206,24 @@ const Jobs = () => {
   ];
 
   const [sortBy, setSortBy] = useState<"salary" | "Date Posted" | null>(null);
-  const [jobList, setJobList] = useState<JobListingProps[]>();
-  const [filteredJobs, setFilteredJobs] = useState<JobListingProps[]>();
+  const [jobList, setJobList] =
+    useState<{ jobDetails: JobListingProps; id: string }[]>();
+  const [filteredJobs, setFilteredJobs] =
+    useState<{ jobDetails: JobListingProps; id: string }[]>();
 
   useEffect(() => {
     if (jobList) {
       setFilteredJobs(
         jobList
-          ?.filter((job: JobListingProps) => {
+          ?.filter(({ jobDetails, id }) => {
             console.log(
               filters,
-              mapJobExperience(job.experience),
+              mapJobExperience(jobDetails.experience),
               filters.experienceLevel
                 .map((i) => i.toLowerCase())
-                .includes(mapJobExperience(job.experience).toLowerCase())
+                .includes(mapJobExperience(jobDetails.experience).toLowerCase())
             );
+
             return (
               (filters.jobType.length === 0 ||
                 filters.jobType
@@ -227,23 +231,28 @@ const Jobs = () => {
                     i.replace(" ", "").replace("-", "").toLowerCase()
                   )
                   .includes(
-                    job.type.toLowerCase().replace(" ", "").replace("-", "")
+                    jobDetails.type
+                      .toLowerCase()
+                      .replace(" ", "")
+                      .replace("-", "")
                   )) &&
               (filters.experienceLevel.length === 0 ||
                 filters.experienceLevel
                   .map((i) => i.toLowerCase())
-                  .includes(mapJobExperience(job.experience).toLowerCase())) &&
+                  .includes(
+                    mapJobExperience(jobDetails.experience).toLowerCase()
+                  )) &&
               (filters.preferredLocation.length === 0 ||
                 filters.preferredLocation.includes("Both") ||
                 filters.preferredLocation
                   .map((e) => e.toLowerCase())
-                  .includes(job.location.toLowerCase())) &&
+                  .includes(jobDetails.location.toLowerCase())) &&
               (filters.location === "" ||
-                job.officelocation
+                jobDetails.officelocation
                   .toLowerCase()
                   .includes(filters.location.toLowerCase())) &&
               (filters.company === "" ||
-                job.company
+                jobDetails.company
                   .toLowerCase()
                   .includes(filters.company.toLowerCase()))
             );
@@ -253,23 +262,28 @@ const Jobs = () => {
               return 0;
             } else {
               if (sortBy === "salary") {
-                return b.salary - a.salary;
+                return b.jobDetails.salary - a.jobDetails.salary;
               } else {
-                return b.timeCreated.seconds - a.timeCreated.seconds;
+                return (
+                  b.jobDetails.timeCreated.seconds -
+                  a.jobDetails.timeCreated.seconds
+                );
               }
             }
           })
       );
       return;
     }
-    fetchAndReturn("jobs", "userId", "!=", "")
+    getAllJobs()
       .then((data) => {
         setJobList(data);
         console.log(data);
+
         setFilteredJobs(
           data
-            ?.filter((job: JobListingProps) => {
-              console.log(filters);
+            ?.filter((data) => {
+              const job = data.jobDetails;
+
               return (
                 (filters.jobType.length === 0 ||
                   filters.jobType.includes(job.type)) &&
@@ -292,14 +306,17 @@ const Jobs = () => {
                     .includes(filters.company.toLowerCase()))
               );
             })
-            .sort((a: JobListingProps, b: JobListingProps) => {
+            .sort((a, b) => {
               if (sortBy === null) {
                 return 0;
               } else {
                 if (sortBy === "salary") {
-                  return b.salary - a.salary;
+                  return b.jobDetails.salary - a.jobDetails.salary;
                 } else {
-                  return a.timeCreated.seconds - b.timeCreated.seconds;
+                  return (
+                    a.jobDetails.timeCreated.seconds -
+                    b.jobDetails.timeCreated.seconds
+                  );
                 }
               }
             })
@@ -389,9 +406,16 @@ const Jobs = () => {
                   </p>
                 )}
                 <div className="space-y-4">
-                  {filteredJobs?.map((job, key) => (
-                    <JobListing key={key} {...job} />
-                  ))}
+                  {filteredJobs?.map((job, key) => {
+                    console.log(job);
+                    return (
+                      <JobListing
+                        key={key}
+                        id={job.id}
+                        jobDetails={job.jobDetails}
+                      />
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>

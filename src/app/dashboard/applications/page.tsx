@@ -64,37 +64,29 @@ import Header from "./header";
 import Summary from "./summary";
 import { useEffect, useState } from "react";
 import { ListingResponse } from "@/app/dashboard/page";
+import { getJobs } from "@/lib/firebase/jobs";
+import { jobPostingSchema } from "@/app/jobportal/create/page";
+import { toast } from "@/components/ui/use-toast";
 
 export default function Dashboard() {
-  const [table, setTable] = useState<ListingResponse[] | []>([]);
+  const [table, setTable] = useState<
+    { data: jobPostingSchema; id: string }[] | []
+  >([]);
   const [adminData, setAdmin] = useState({});
   let summary = "";
   useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await fetch(
-          "https://image-sharing-api-ten.vercel.app/myunsplash/create"
-        );
-        if (!res.ok) return;
-        console.log(res);
-        const data = await res.json();
-        setTable(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchJobs();
+    getJobs()
+      .then((res) => {
+        setTable(res);
+      })
+      .catch((e) =>
+        toast({
+          title: "Error",
+          description: e.message,
 
-    const getAmin = async () => {
-      try {
-        const res = await fetch("11");
-        if (!res.ok) return;
-        const data = await res.json();
-        setAdmin(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+          // status: "error",
+        })
+      );
   }, []);
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -159,123 +151,46 @@ export default function Dashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Client Name</TableHead>
-                        <TableHead>Client Email</TableHead>
+                        <TableHead>Company name</TableHead>
+                        <TableHead>Role</TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Skill Match
+                          Number of Applicants
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Experience Match
+                          Office location
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Education Match
-                        </TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Merits
-                        </TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Demerits{" "}
+                          Role type
                         </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {table.map((row) => {
+                      {table.map((job) => {
+                        const row = job.data;
                         return (
-                          <TableRow>
-                            <TableCell className="font-medium">
-                              User name
-                            </TableCell>
-                            <TableCell>User email</TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {row.response.ratings.overallFit}
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {row.response.ratings.skillsMatch}
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {row.response.ratings.experienceMatch}
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {row.response.ratings.educationMatch}
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {
-                                <Summary
-                                  summary={row.response.merits
-                                    .map((msg) => {
-                                      let temp = "";
-                                      summary += "\n" + msg;
-                                      temp = summary;
-                                      summary = "";
+                          <Link href={"/dashboard/applications/" + job.id}>
+                            <TableRow>
+                              <TableCell className="font-medium">
+                                {row.company}
+                              </TableCell>
 
-                                      return temp;
-                                    })
-                                    .toString()}
-                                >
-                                  <Button variant="outline">Merits</Button>
-                                </Summary>
-                              }
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {
-                                <Summary
-                                  summary={row.response.demerits
-                                    .map((msg) => {
-                                      let temp = "";
-                                      summary += "\n" + msg;
-                                      temp = summary;
-                                      summary = "";
+                              <TableCell className="hidden md:table-cell">
+                                {row.role}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {row.applicants}
+                              </TableCell>
 
-                                      return temp;
-                                    })
-                                    .toString()}
-                                >
-                                  <Button variant="outline">Demerits</Button>
-                                </Summary>
-                              }
-                            </TableCell>
-                          </TableRow>
+                              <TableCell className="hidden md:table-cell">
+                                {row.officelocation}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {row.type}
+                              </TableCell>
+                            </TableRow>
+                          </Link>
                         );
                       })}
-
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          Hypernova Headphones
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">Active</Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          88
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          <Summary summary="HEllo I am summary">
-                            <Button variant="outline">Show Summary</Button>
-                          </Summary>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-10-18 03:21 PM
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
                     </TableBody>
                   </Table>
                 </CardContent>

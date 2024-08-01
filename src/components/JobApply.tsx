@@ -25,7 +25,14 @@ interface FormData {
   cv: File | null;
 }
 
-export function JobApply({ data }: { data: JobListingProps }) {
+export function JobApply({
+  data,
+  jobId,
+}: {
+  data: JobListingProps;
+  jobId: string;
+}) {
+  console.log(jobId);
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -68,7 +75,7 @@ export function JobApply({ data }: { data: JobListingProps }) {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const jobId = "jobId";
+
     // Here you would typically send the data to your server
     const { cv, ...other } = formData;
     console.log("Form submitted:", formData);
@@ -88,6 +95,8 @@ export function JobApply({ data }: { data: JobListingProps }) {
     formdataOBJ.append("cv", cv);
     formdataOBJ.append("applicationId", documentId);
     formdataOBJ.append("jd", JSON.stringify(data));
+    formdataOBJ.append("jobId", jobId);
+
     console.log("formdataOBJ", formdataOBJ);
     axios.post("/api/analyse-resume", formdataOBJ, {
       headers: {

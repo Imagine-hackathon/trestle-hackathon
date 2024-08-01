@@ -103,27 +103,33 @@ function timeAgo(date: number) {
   return "just now";
 }
 
-export const JobListing = (props: JobListingProps) => {
+export const JobListing = ({
+  jobDetails,
+  id,
+}: {
+  jobDetails: JobListingProps;
+  id: string;
+}) => {
   return (
     <Card className="w-full overflow-hidden transition-all duration-300 hover:shadow-lg">
       <CardHeader className="pb-2">
         <div className="flex items-center gap-4">
           <Image
-            alt={`${props.company} logo`}
-            src={props.imageurl || "/next.svg"}
+            alt={`${jobDetails.company} logo`}
+            src={jobDetails.imageurl || "/next.svg"}
             width={60}
             height={60}
             className="rounded-lg border p-1 shadow-sm"
           />
           <div className="flex-1">
             <h2 className="text-xl font-semibold text-imagine-blue">
-              {props.role}
+              {jobDetails.role}
             </h2>
-            <p className="text-gray-600">{props.company}</p>
+            <p className="text-gray-600">{jobDetails.company}</p>
           </div>
           <Badge variant="secondary" className="text-xs">
-            {props?.timeCreated
-              ? timeAgo(props.timeCreated.seconds * 1000)
+            {jobDetails?.timeCreated
+              ? timeAgo(jobDetails.timeCreated.seconds * 1000)
               : ""}
           </Badge>
         </div>
@@ -133,30 +139,30 @@ export const JobListing = (props: JobListingProps) => {
           <div className="flex items-center gap-2">
             <MapPin size={18} />
             <span>
-              {props.officelocation} | {props.location}
+              {jobDetails.officelocation} | {jobDetails.location}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <Clock size={18} />
-            <span>{props.type.toLowerCase()}</span>
+            <span>{jobDetails.type.toLowerCase()}</span>
           </div>
           <div className="flex items-center gap-2">
             <DollarSign size={18} />
-            <span>${props.salary.toLocaleString("en-US")}/year</span>
+            <span>${jobDetails.salary.toLocaleString("en-US")}/year</span>
           </div>
           <div className="flex items-center gap-2">
             <Briefcase size={18} />
-            <span>{props.experience} years experience</span>
+            <span>{jobDetails.experience} years experience</span>
           </div>
         </div>
         <ul className="space-y-2 text-gray-700">
-          {typeof props.description === "string" ? (
+          {typeof jobDetails.description === "string" ? (
             <li className="flex items-start">
               <Dot size={24} className="shrink-0" />
-              <span>{props.description}</span>
+              <span>{jobDetails.description}</span>
             </li>
           ) : (
-            props.description.map((des, key) => (
+            jobDetails.description.map((des, key) => (
               <li key={key} className="flex items-start">
                 <Dot size={24} className="shrink-0" />
                 <span>{des}</span>
@@ -168,9 +174,9 @@ export const JobListing = (props: JobListingProps) => {
       <CardFooter className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2 text-gray-600">
           <Users size={18} />
-          <span>{props.applicants} applicants</span>
+          <span>{jobDetails.applicants} applicants</span>
         </div>
-        <JobApply data={props} />
+        <JobApply data={jobDetails} jobId={id} />
       </CardFooter>
     </Card>
   );
