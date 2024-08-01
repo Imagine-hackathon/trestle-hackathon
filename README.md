@@ -27,7 +27,7 @@ To set up the project locally, follow these steps:
 1. **Clone the repository**:
     ```bash
     git clone https://github.com/Imagine-hackathon/trestle-hackathon.git
-    cd your-repo-name
+    cd trestle-hackathon
     ```
 
 2. **Install dependencies**:
