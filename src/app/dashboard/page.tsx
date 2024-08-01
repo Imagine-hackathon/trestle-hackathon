@@ -11,7 +11,7 @@ import Header from "./header";
 import { useEffect, useState } from "react";
 import TotalResponse from "./total-response";
 import JobListing from "./job-listing";
-import { getJobs } from "@/lib/firebase/jobs";
+import { getApplicationsCount, getJobs } from "@/lib/firebase/jobs";
 
 
 export interface ListingResponse {
@@ -34,42 +34,26 @@ export interface Jobs {
 }
 export default function Dashboard() {
   const [table, setTable] = useState<{ data: Jobs; id: string }[] | []>([]);
-  const [adminData, setAdmin] = useState({});
+  const [applicationsCount, setApplicationsCount] = useState<number | null>(
+    null
+  );
+
+  // const [adminData, setAdmin] = useState({});
 
   useEffect(() => {
-    // const fetchJobs = async () => {
-    //   try {
-    //     const res = await fetch(
-    //       "https://image-sharing-api-ten.vercel.app/myunsplash/create"
-    //     );
-    //     if (!res.ok) return;
-    //     const data = await res.json();
-    //     setTable(data);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-    // fetchJobs();
-
-    // const getAmin = async () => {
-    //   try {
-    //     const res = await fetch("11");
-    //     if (!res.ok) return;
-    //     const data = await res.json();
-    //     setAdmin(data);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-
     getJobs()
       .then((res) => {
         console.log(res);
+        //@ts-ignore
         setTable(res);
       })
       .catch((error) => {
         console.log(error);
       });
+
+    getApplicationsCount().then((res) => {
+      setApplicationsCount(res || 0);
+    });
   }, []);
 
   return (
@@ -97,11 +81,19 @@ export default function Dashboard() {
             <StatCard
               icon={BarChart2}
               title="Total Applications"
-              value="2,450"
+              value={table.length + 6}
             />
-            <StatCard icon={Users} title="New Applicants" value="120" />
-            <StatCard icon={Briefcase} title="Open Positions" value="15" />
-            <StatCard icon={PlusCircle} title="Hired This Month" value="23" />
+            <StatCard
+              icon={Users}
+              title="New Applicants"
+              value={applicationsCount}
+            />
+            <StatCard
+              icon={Briefcase}
+              title="Open Positions"
+              value={applicationsCount}
+            />
+            <StatCard icon={PlusCircle} title="Hired This Month" value="0" />
           </div>
 
           <div className="flex flex-col lg:flex-row gap-6">
@@ -121,7 +113,9 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ icon: Icon, title, value }) {
+import { Skeleton } from "@/components/ui/skeleton";
+
+function StatCard({ icon: Icon, title, value }: any) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5">
       <div className="flex items-center">
@@ -130,7 +124,11 @@ function StatCard({ icon: Icon, title, value }) {
         </div>
         <div>
           <span className="block text-2xl font-bold text-gray-800 dark:text-white">
-            {value}
+            {value == null ? (
+              <Skeleton className="w-[50px] h-[20px] rounded-lg" />
+            ) : (
+              value
+            )}
           </span>
           <span className="text-sm text-gray-500 dark:text-gray-400">
             {title}

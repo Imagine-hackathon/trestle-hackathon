@@ -5,6 +5,8 @@ import {
   getDocs,
   query,
   where,
+  doc,
+  increment,
 } from "firebase/firestore";
 import { db, firebaseAuth } from "./firebase";
 import { JobListingProps } from "@/components/JobListings";
@@ -252,4 +254,54 @@ export type ApplicationType = {
   name: string;
 
   resumeLink: string;
+};
+
+export const getJobsIds = async () => {
+  const user = firebaseAuth.currentUser;
+
+  if (!user) throw Error("User not found");
+  // Reference to the collection
+  const colRef = collection(db, "jobs");
+
+  // Create a query to filter documents
+  const q = query(colRef, where("userId", "==", user.uid));
+
+  try {
+    // Execute the query
+    const querySnapshot = await getDocs(q);
+
+    // Process the results
+    const documents: string[] = [];
+
+    querySnapshot.forEach((doc) => {
+      //@ts-ignore
+      documents.push(doc.id);
+    });
+
+    return documents;
+  } catch (error) {
+    console.error("Error getting documents:", error);
+    throw error;
+  }
+};
+
+export const getApplicationsCount = async () => {
+  const collectionRef = collection(db, "applications");
+  try {
+    const ids = await getJobsIds();
+    const q = query(collectionRef, where("jobId", "in", ids));
+
+    console.log("ids", ids);
+
+    // Get all documents in the collection
+    const querySnapshot = await getDocs(q);
+
+    // Count the number of documents
+    const count = querySnapshot.size;
+
+    console.log("count", count);
+    return count;
+  } catch (error) {
+    console.error("Error counting documents: ", error);
+  }
 };
