@@ -6,7 +6,7 @@ import { addAIOUTPUt } from "@/lib/firebase/jobs";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 //
 
-import { ListingResponse } from "@/app/dashboard/[adminId]/page";
+import { ListingResponse } from "@/app/dashboard/page";
 
 // this function returns a new instance of the `TextExtractor` class, with the default
 // extraction methods (docx, pptx, xlsx, pdf) registered.

@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import { db, firebaseAuth } from "./firebase";
 import { JobListingProps } from "@/components/JobListings";
-import { Jobs, ListingResponse } from "@/app/dashboard/[adminId]/page";
+import { Jobs, ListingResponse } from "@/app/dashboard/page";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { jobPostingSchema } from "@/app/jobportal/create/page";
 import { time } from "console";

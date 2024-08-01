@@ -63,7 +63,7 @@ import {
 import Header from "./header";
 import Summary from "./summary";
 import { useEffect, useState } from "react";
-import { ListingResponse } from "@/app/dashboard/[adminId]/page";
+import { ListingResponse } from "@/app/dashboard/page";
 
 export default function Dashboard() {
   const [table, setTable] = useState<ListingResponse[] | []>([]);
