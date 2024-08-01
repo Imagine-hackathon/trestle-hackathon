@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 import React from "react";
 import { Briefcase, Clock, DollarSign, Dot, MapPin, Users } from "lucide-react";
 import Image from "next/image";
@@ -186,4 +184,3 @@ export const JobListing = ({
 };
 
 export default JobListing;
->>>>>>> f7f4e8094e0af15954a4eb07e5985422cd7c4098

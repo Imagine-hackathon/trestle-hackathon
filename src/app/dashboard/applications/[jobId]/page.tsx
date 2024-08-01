@@ -34,32 +34,34 @@ const Page = ({ params }: { params: { jobId: string } }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const combinedData = applications
-        .map((item1) => {
-            const matchingItem = aiResponse.find(
-                (item2) => item2.data.jobId === item1.data.jobId
-            );
-            if (matchingItem && matchingItem.data.aiAnalysis) {
-                const { merits, demerits, ratings } =
-                    matchingItem.data.aiAnalysis;
+    // Map applicationId to application data for quick lookup
+    const appDataMap = applications.reduce((acc, app) => {
+        //@ts-ignore
+        acc[app.id] = app.data;
+        return acc;
+    }, {});
+
+    // Create the new array with the required structure
+    const combinedData = aiResponse
+        .map((ai) => {
+            //@ts-ignore
+            const appData = appDataMap[ai.data.applicationId];
+            if (appData) {
                 return {
-                    name: item1.data.name,
-                    skillMatch: ratings.skillsMatch,
-                    overallMatch: ratings.overallFit,
-                    experienceMatch: ratings.experienceMatch,
-                    merits: merits,
-                    demerits: demerits,
-                    pdfLink: item1.data.resumeLink,
+                    name: appData.name,
+                    skillMatch: ai.data.aiAnalysis.ratings.skillsMatch,
+                    overallMatch: ai.data.aiAnalysis.ratings.overallFit,
+                    experienceMatch: ai.data.aiAnalysis.ratings.experienceMatch,
+                    merits: ai.data.aiAnalysis.merits,
+                    demerits: ai.data.aiAnalysis.demerits,
+                    pdfLink: appData.resumeLink,
                 };
             }
-            return null;
+            return null; // or handle missing data differently
         })
-        .filter((item) => item !== null);
-
+        .filter((item) => item !== null); // Filter out null entries if any
     return (
         <div>
-            {JSON.stringify(applications)}
-            <div>{JSON.stringify(aiResponse)}</div>
             <DemoPage combinedData={combinedData} />
         </div>
     );
