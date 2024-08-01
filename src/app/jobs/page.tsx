@@ -205,7 +205,7 @@ const Jobs = () => {
     },
   ];
 
-  const [sortBy, setSortBy] = useState<"Salary" | "Date Posted" | null>(null);
+  const [sortBy, setSortBy] = useState<"salary" | "Date Posted" | null>(null);
   const [jobList, setJobList] = useState<JobListingProps[]>();
   const [filteredJobs, setFilteredJobs] = useState<JobListingProps[]>();
   const { user, loading } = useContext(AuthorizationContext);
@@ -252,10 +252,10 @@ const Jobs = () => {
             return 0
           }
           else {
-            if (sortBy === 'Salary'){
+            if (sortBy === 'salary'){
               return b.salary - a.salary
             } else {
-              return a.timeCreated.seconds - b.timeCreated.seconds
+              return b.timeCreated.seconds - a.timeCreated.seconds
             }
             }
         })
@@ -295,7 +295,7 @@ const Jobs = () => {
               return 0
             }
             else {
-              if (sortBy === 'Salary'){
+              if (sortBy === 'salary'){
                 return b.salary - a.salary
               } else {
                 return a.timeCreated.seconds - b.timeCreated.seconds
@@ -343,7 +343,7 @@ const Jobs = () => {
                   <p className="text-sm text-gray-500">Sort by:</p>
                   <Select
                     onValueChange={(value) =>
-                      setSortBy(value as "Salary" | "Date Posted" | null)
+                      setSortBy(value as "salary" | "Date Posted" | null)
                     }
                     value={sortBy || undefined}
                   >

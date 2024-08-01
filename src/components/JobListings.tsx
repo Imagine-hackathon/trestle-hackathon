@@ -155,7 +155,7 @@ export const JobListing = (props: JobListingProps) => {
           ))}
         </ul>
       </CardContent>
-      <CardFooter className="flex items-center justify-between bg-gray-50 px-6 py-4">
+      <CardFooter className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2 text-gray-600">
           <Users size={18} />
           <span>{props.applicants} applicants</span>
