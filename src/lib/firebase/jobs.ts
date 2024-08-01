@@ -58,6 +58,29 @@ export const getJobs = async () => {
     throw error;
   }
 };
+
+export const getAllJobs = async () => {
+  // Reference to the collection
+  const colRef = collection(db, "jobs");
+
+  try {
+    // Execute the query
+    const querySnapshot = await getDocs(colRef);
+
+    // Process the results
+    const documents: { id: string; data: jobPostingSchema[] }[] = [];
+
+    querySnapshot.forEach((doc) => {
+      //@ts-ignore
+      documents.push({ id: doc.id, data: doc.data() });
+    });
+
+    return documents;
+  } catch (error) {
+    console.error("Error getting documents:", error);
+    throw error;
+  }
+};
 export const addApplication = async ({
   email,
   name,

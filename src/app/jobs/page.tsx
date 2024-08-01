@@ -18,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AuthorizationContext } from "@/lib/userContext";
 import { fetchAndReturn } from "@/lib/firebase/fetchData";
 
 interface JobListingProps {
@@ -208,12 +207,8 @@ const Jobs = () => {
   const [sortBy, setSortBy] = useState<"salary" | "Date Posted" | null>(null);
   const [jobList, setJobList] = useState<JobListingProps[]>();
   const [filteredJobs, setFilteredJobs] = useState<JobListingProps[]>();
-  const { user, loading } = useContext(AuthorizationContext);
 
   useEffect(() => {
-    if (!user) {
-      return;
-    }
     if (jobList) {
       setFilteredJobs(
         jobList
@@ -311,7 +306,7 @@ const Jobs = () => {
         );
       })
       .catch((e: any) => console.log(e));
-  }, [user, filters, sortBy, loading]);
+  }, [filters, sortBy]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

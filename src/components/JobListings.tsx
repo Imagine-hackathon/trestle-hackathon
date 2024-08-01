@@ -1,14 +1,12 @@
-import React from 'react';
-import {
-  Briefcase,
-  Clock,
-  DollarSign,
-  Dot,
-  MapPin,
-  Users,
-} from "lucide-react";
+import React from "react";
+import { Briefcase, Clock, DollarSign, Dot, MapPin, Users } from "lucide-react";
 import Image from "next/image";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { JobApply } from "./JobApply";
@@ -33,20 +31,22 @@ function parseDateTime(dateTimeString: string): Date {
   const match = dateTimeString.match(dateTimeRegex);
 
   if (!match) {
-    throw new Error('Invalid date and time format. Expected format: "Month Day, Year at HH:MM:SS AM/PM UTC"');
+    throw new Error(
+      'Invalid date and time format. Expected format: "Month Day, Year at HH:MM:SS AM/PM UTC"'
+    );
   }
 
   const [_, datePart, timePart, period] = match;
 
   // Create a Date object from the date part
-  const date = new Date(datePart + ' UTC');
+  const date = new Date(datePart + " UTC");
 
   // Split the time part and convert to 24-hour format if necessary
-  let [hours, minutes, seconds] = timePart.split(':').map(Number);
+  let [hours, minutes, seconds] = timePart.split(":").map(Number);
 
-  if (period === 'PM' && hours < 12) {
+  if (period === "PM" && hours < 12) {
     hours += 12;
-  } else if (period === 'AM' && hours === 12) {
+  } else if (period === "AM" && hours === 12) {
     hours = 0;
   }
 
@@ -116,11 +116,15 @@ export const JobListing = (props: JobListingProps) => {
             className="rounded-lg border p-1 shadow-sm"
           />
           <div className="flex-1">
-            <h2 className="text-xl font-semibold text-imagine-blue">{props.role}</h2>
+            <h2 className="text-xl font-semibold text-imagine-blue">
+              {props.role}
+            </h2>
             <p className="text-gray-600">{props.company}</p>
           </div>
           <Badge variant="secondary" className="text-xs">
-            {props?.timeCreated?timeAgo((props.timeCreated).seconds*1000): ""}
+            {props?.timeCreated
+              ? timeAgo(props.timeCreated.seconds * 1000)
+              : ""}
           </Badge>
         </div>
       </CardHeader>
@@ -128,7 +132,9 @@ export const JobListing = (props: JobListingProps) => {
         <div className="mb-4 flex flex-wrap gap-4 text-sm text-gray-600">
           <div className="flex items-center gap-2">
             <MapPin size={18} />
-            <span>{props.officelocation} | {props.location}</span>
+            <span>
+              {props.officelocation} | {props.location}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <Clock size={18} />
@@ -144,15 +150,19 @@ export const JobListing = (props: JobListingProps) => {
           </div>
         </div>
         <ul className="space-y-2 text-gray-700">
-          {typeof(props.description)==='string'?<li className="flex items-start">
+          {typeof props.description === "string" ? (
+            <li className="flex items-start">
               <Dot size={24} className="shrink-0" />
               <span>{props.description}</span>
-            </li>:props.description.map((des, key) => (
-            <li key={key} className="flex items-start">
-              <Dot size={24} className="shrink-0" />
-              <span>{des}</span>
             </li>
-          ))}
+          ) : (
+            props.description.map((des, key) => (
+              <li key={key} className="flex items-start">
+                <Dot size={24} className="shrink-0" />
+                <span>{des}</span>
+              </li>
+            ))
+          )}
         </ul>
       </CardContent>
       <CardFooter className="flex items-center justify-between px-6 py-4">
@@ -166,4 +176,4 @@ export const JobListing = (props: JobListingProps) => {
   );
 };
 
-export default JobListing
+export default JobListing;

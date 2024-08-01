@@ -16,6 +16,8 @@ import { Input } from "./ui/input";
 import { toast, useToast } from "@/components/ui/use-toast";
 import { addApplication, addCVTOBucket } from "@/lib/firebase/jobs";
 import axios from "axios";
+import { Loader, Loader2 } from "lucide-react";
+import { JobListingProps } from "./JobListings";
 interface FormData {
   name: string;
   email: string;
@@ -23,7 +25,7 @@ interface FormData {
   cv: File | null;
 }
 
-export function JobApply() {
+export function JobApply({ data }: { data: JobListingProps }) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -31,7 +33,7 @@ export function JobApply() {
     contact: "",
     cv: null,
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -73,7 +75,7 @@ export function JobApply() {
     if (!cv) return;
 
     const downloadUrl = await addCVTOBucket(cv);
-    console.log(cv);
+
     const documentId = await addApplication({
       jobId,
       ...other,
@@ -85,9 +87,9 @@ export function JobApply() {
     const formdataOBJ = new FormData();
     formdataOBJ.append("cv", cv);
     formdataOBJ.append("applicationId", documentId);
-    formdataOBJ.append("jd", "");
-
-    axios.post("/api/analyse-resume", formData, {
+    formdataOBJ.append("jd", JSON.stringify(data));
+    console.log("formdataOBJ", formdataOBJ);
+    axios.post("/api/analyse-resume", formdataOBJ, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -99,7 +101,7 @@ export function JobApply() {
     });
 
     // Reset form after submission
-    // setFormData({
+    // setFormD ata({
     //   name: "",
     //   email: "",
     //   contact: "",
@@ -169,7 +171,9 @@ export function JobApply() {
               </div>
             </div>
             <DrawerFooter>
-              <Button type="submit">Submit</Button>
+              <Button disabled={loading} type="submit">
+                {loading ? <Loader2 className="animate-spin" /> : "Submit"}
+              </Button>
               <DrawerClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DrawerClose>
