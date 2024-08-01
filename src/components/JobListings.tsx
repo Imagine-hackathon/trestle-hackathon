@@ -17,14 +17,43 @@ export interface JobListingProps {
   company: string;
   role: string;
   location: string;
-  jobLocation: string;
+  officelocation: string;
   type: string;
   salary: number;
   experience: string;
   description: string[];
   applicants: number;
-  timePosted: number;
+  timeCreated: any;
   imageurl?: string;
+}
+
+function parseDateTime(dateTimeString: string): Date {
+  // Define the regular expression for the date and time string
+  const dateTimeRegex = /^(.*) at (\d{1,2}:\d{2}:\d{2})\s(AM|PM)\sUTC$/;
+  const match = dateTimeString.match(dateTimeRegex);
+
+  if (!match) {
+    throw new Error('Invalid date and time format. Expected format: "Month Day, Year at HH:MM:SS AM/PM UTC"');
+  }
+
+  const [_, datePart, timePart, period] = match;
+
+  // Create a Date object from the date part
+  const date = new Date(datePart + ' UTC');
+
+  // Split the time part and convert to 24-hour format if necessary
+  let [hours, minutes, seconds] = timePart.split(':').map(Number);
+
+  if (period === 'PM' && hours < 12) {
+    hours += 12;
+  } else if (period === 'AM' && hours === 12) {
+    hours = 0;
+  }
+
+  // Set the hours, minutes, and seconds to the Date object
+  date.setUTCHours(hours, minutes, seconds);
+
+  return date;
 }
 
 function timeAgo(date: number) {
@@ -91,7 +120,7 @@ export const JobListing = (props: JobListingProps) => {
             <p className="text-gray-600">{props.company}</p>
           </div>
           <Badge variant="secondary" className="text-xs">
-            {timeAgo(props.timePosted)}
+            {props?.timeCreated?timeAgo((props.timeCreated).seconds*1000): ""}
           </Badge>
         </div>
       </CardHeader>
@@ -99,11 +128,11 @@ export const JobListing = (props: JobListingProps) => {
         <div className="mb-4 flex flex-wrap gap-4 text-sm text-gray-600">
           <div className="flex items-center gap-2">
             <MapPin size={18} />
-            <span>{props.location} | {props.jobLocation}</span>
+            <span>{props.officelocation} | {props.location}</span>
           </div>
           <div className="flex items-center gap-2">
             <Clock size={18} />
-            <span>{props.type === "fulltime" ? "Full Time" : "Freelance"}</span>
+            <span>{props.type.toLowerCase()}</span>
           </div>
           <div className="flex items-center gap-2">
             <DollarSign size={18} />
@@ -115,7 +144,10 @@ export const JobListing = (props: JobListingProps) => {
           </div>
         </div>
         <ul className="space-y-2 text-gray-700">
-          {props.description.map((des, key) => (
+          {typeof(props.description)==='string'?<li className="flex items-start">
+              <Dot size={24} className="shrink-0" />
+              <span>{props.description}</span>
+            </li>:props.description.map((des, key) => (
             <li key={key} className="flex items-start">
               <Dot size={24} className="shrink-0" />
               <span>{des}</span>
