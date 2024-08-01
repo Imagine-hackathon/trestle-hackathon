@@ -45,7 +45,7 @@ export const getJobs = async () => {
     const querySnapshot = await getDocs(q);
 
     // Process the results
-    const documents: { id: string; data: jobPostingSchema[] }[] = [];
+    const documents: { id: string; data: jobPostingSchema }[] = [];
 
     querySnapshot.forEach((doc) => {
       //@ts-ignore
@@ -68,11 +68,11 @@ export const getAllJobs = async () => {
     const querySnapshot = await getDocs(colRef);
 
     // Process the results
-    const documents: { id: string; data: jobPostingSchema[] }[] = [];
+    const documents: { id: string; jobDetails: JobListingProps }[] = [];
 
     querySnapshot.forEach((doc) => {
       //@ts-ignore
-      documents.push({ id: doc.id, data: doc.data() });
+      documents.push({ id: doc.id, jobDetails: doc.data() });
     });
 
     return documents;
@@ -131,15 +131,18 @@ export const addCVTOBucket = async (file: File) => {
 export const addAIOUTPUt = async ({
   applicationId,
   aiAnalysis,
+  jobId,
 }: {
   applicationId: string;
   aiAnalysis: ListingResponse | string;
+  jobId: string;
 }) => {
   try {
     // Add a new document with a generated id.
     const docRef = await addDoc(collection(db, "aiResults"), {
       applicationId,
       aiAnalysis,
+      jobId,
     });
 
     return docRef.id;
@@ -166,4 +169,87 @@ export const addImageTOBucket = async (file: File) => {
     console.error("Error uploading file:", error);
     throw error;
   }
+};
+
+export const getApplications = async (jobPostingId: string) => {
+  // Reference to the collection
+  const colRef = collection(db, "applications");
+
+  // Create a query to filter documents
+  const q = query(colRef, where("jobId", "==", jobPostingId));
+
+  try {
+    // Execute the query
+    const querySnapshot = await getDocs(q);
+
+    // Process the results
+    const documents: {
+      id: string;
+      data: ApplicationType;
+    }[] = [];
+
+    querySnapshot.forEach((doc) => {
+      //@ts-ignore
+      documents.push({ id: doc.id, data: doc.data() });
+    });
+
+    return documents;
+  } catch (error) {
+    console.error("Error getting documents:", error);
+    throw error;
+  }
+};
+export const getAiResponse = async (jobPostingId: string) => {
+  // Reference to the collection
+  const colRef = collection(db, "aiResults");
+
+  // Create a query to filter documents
+  const q = query(colRef, where("jobId", "==", jobPostingId));
+
+  try {
+    // Execute the query
+    const querySnapshot = await getDocs(q);
+
+    // Process the results
+    const documents: {
+      id: string;
+      data: AiResponse;
+    }[] = [];
+
+    querySnapshot.forEach((doc) => {
+      //@ts-ignore
+      documents.push({ id: doc.id, data: doc.data() });
+    });
+
+    return documents;
+  } catch (error) {
+    console.error("Error getting documents:", error);
+    throw error;
+  }
+};
+
+export type AiResponse = {
+  applicationId: string;
+  jobId: string;
+  aiAnalysis: {
+    demerits: string[];
+    merits: string[];
+    ratings: {
+      educationMatch: number;
+      experienceMatch: number;
+      overallFit: number;
+      skillsMatch: number;
+    };
+  };
+};
+
+export type ApplicationType = {
+  contact: string;
+
+  email: string;
+
+  jobId: string;
+  name: string;
+
+  resumeLink: string;
 };

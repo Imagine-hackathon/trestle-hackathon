@@ -247,9 +247,15 @@ const CreateJob = () => {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="remote">Remote</SelectItem>
-                                    <SelectItem value="onsite">On-site</SelectItem>
-                                    <SelectItem value="hybrid">Hybrid</SelectItem>
+                                    <SelectItem value="remote">
+                                      Remote
+                                    </SelectItem>
+                                    <SelectItem value="onsite">
+                                      On-site
+                                    </SelectItem>
+                                    <SelectItem value="hybrid">
+                                      Hybrid
+                                    </SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -291,9 +297,15 @@ const CreateJob = () => {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="full-time">Full-time</SelectItem>
-                                    <SelectItem value="part-time">Part-time</SelectItem>
-                                    <SelectItem value="contract">Contract</SelectItem>
+                                    <SelectItem value="full-time">
+                                      Full-time
+                                    </SelectItem>
+                                    <SelectItem value="part-time">
+                                      Part-time
+                                    </SelectItem>
+                                    <SelectItem value="contract">
+                                      Contract
+                                    </SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -342,7 +354,9 @@ const CreateJob = () => {
                             name="experience"
                             render={({ field }) => (
                               <FormItem className="sm:flex-[0.8] col-span-12">
-                                <FormLabel>Experience Required (in years)</FormLabel>
+                                <FormLabel>
+                                  Experience Required (in years)
+                                </FormLabel>
                                 <FormControl>
                                   <Input
                                     className="sm:col-span-3 col-span-12"
@@ -361,7 +375,8 @@ const CreateJob = () => {
                             accept=".jpg, .jpeg, .png"
                             type="file"
                             onChange={(e) => {
-                              e.target.files?.length && setFile(e.target.files?.[0]);
+                              e.target.files?.length &&
+                                setFile(e.target.files?.[0]);
                             }}
                           />
                         </div>
