@@ -4,7 +4,6 @@ import "./globals.css";
 import { AuthContext } from "@/lib/userContext";
 import { getAuthenticatedAppForUser } from "@/lib/firebase/firebaseserver";
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -16,7 +15,6 @@ export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-
 }>) {
   const { currentUser } = await getAuthenticatedAppForUser(undefined);
   return (

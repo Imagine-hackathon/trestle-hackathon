@@ -1,6 +1,6 @@
-import * as React from "react"
-import { useState, ChangeEvent, FormEvent } from "react"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -10,11 +10,12 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
-import { Label } from "./ui/label"
-import { Input } from "./ui/input"
-import { useToast } from "@/components/ui/use-toast"
-
+} from "@/components/ui/drawer";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import { toast, useToast } from "@/components/ui/use-toast";
+import { addApplication, addCVTOBucket } from "@/lib/firebase/jobs";
+import axios from "axios";
 interface FormData {
   name: string;
   email: string;
@@ -23,62 +24,91 @@ interface FormData {
 }
 
 export function JobApply() {
-  const { toast } = useToast()
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     contact: "",
-    cv: null
-  })
-
+    cv: null,
+  });
+  const [loading, setLoading] = useState(true);
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target
-    setFormData(prevData => ({
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
       ...prevData,
-      [id]: value
-    }))
-  }
+      [id]: value,
+    }));
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file && (file.type === "application/pdf" || file.type === "application/msword" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
-      setFormData(prevData => ({
+    const file = e.target.files?.[0];
+    if (
+      file &&
+      (file.type === "application/pdf" ||
+        file.type === "application/msword" ||
+        file.type ===
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+    ) {
+      setFormData((prevData) => ({
         ...prevData,
-        cv: file
-      }))
+        cv: file,
+      }));
     } else {
       toast({
         title: "Invalid file type",
         description: "Please upload a PDF or DOC/DOCX file.",
         variant: "destructive",
-      })
-      e.target.value = ""
+      });
+      e.target.value = "";
     }
-  }
+  };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    const jobId = "jobId";
     // Here you would typically send the data to your server
-    console.log("Form submitted:", formData)
-    
-    // Show success toast
+    const { cv, ...other } = formData;
+    console.log("Form submitted:", formData);
+    if (!cv) return;
+
+    const downloadUrl = await addCVTOBucket(cv);
+    console.log(cv);
+    const documentId = await addApplication({
+      jobId,
+      ...other,
+      resumeLink: downloadUrl,
+    });
+
+    setLoading(false);
+
+    const formdataOBJ = new FormData();
+    formdataOBJ.append("cv", cv);
+    formdataOBJ.append("applicationId", documentId);
+    formdataOBJ.append("jd", "");
+
+    axios.post("/api/analyse-resume", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
     toast({
       title: "Application Submitted",
       description: "Your job application has been received successfully.",
-    })
-    
+    });
+
     // Reset form after submission
-    setFormData({
-      name: "",
-      email: "",
-      contact: "",
-      cv: null
-    })
-    
-    // Close the drawer
-    setOpen(false)
-  }
+    // setFormData({
+    //   name: "",
+    //   email: "",
+    //   contact: "",
+    //   cv: null,
+    // });
+
+    // // Close the drawer
+    // setOpen(false);
+  };
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
@@ -129,9 +159,9 @@ export function JobApply() {
               <div className="grid gap-2">
                 <div className="grid w-full max-w-sm items-center gap-1.5">
                   <Label htmlFor="cv">CV</Label>
-                  <Input 
-                    id="cv" 
-                    type="file" 
+                  <Input
+                    id="cv"
+                    type="file"
                     accept=".pdf,.doc,.docx"
                     onChange={handleFileChange}
                   />
@@ -148,5 +178,5 @@ export function JobApply() {
         </div>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }
