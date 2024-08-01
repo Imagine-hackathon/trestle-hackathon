@@ -69,10 +69,10 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="flex items-center space-x-4 mt-4">
-              <Button variant="link" className="">
+              <Button variant="link" className="text-imagine-blue">
                 <Link href="/login">Login</Link>
               </Button>
-              <Button variant="link" className="text-imagine-blue">
+              <Button variant="default" className="bg-imagine-secondary transition-colors duration-300  hover:bg-orange-600">
                 <Link href="/signup">Sign up</Link>
               </Button>
               <ModeToggle />

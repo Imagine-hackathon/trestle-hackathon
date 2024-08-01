@@ -28,11 +28,11 @@ const Landing = () => {
           />
         </div>
         <div className="text-center px-4">
-          <h1 className="sm:text-6xl text-4xl font-semibold mb-4 leading-tight">
+          <h1 className="sm:text-6xl text-4xl font-semibold mb-4 leading-tight text-imagine-secondary">
             Find freelance and full-time <br />
             <span className="text-imagine-blue">developer</span> jobs.
           </h1>
-          <p className="sm:text-base text-sm font-light max-w-[540px] mx-auto">
+          <p className="sm:text-base text-base font-light max-w-[540px] mx-auto">
             ImagineRecruits is your one-stop center for thousands of digital
             freelance and full-time jobs.
           </p>
@@ -58,11 +58,11 @@ const Landing = () => {
 
       <div className="w-full py-24 bg-green-200 bg-opacity-10 mt-8">
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-5xl font-bold text-center mb-16 text-gray-800 leading-tight">
+          <h2 className="text-5xl font-bold text-center mb-16 text-imagine-blue leading-tight">
             The #1 Site for Jobs for both
-            <span className="text-imagine-blue"> Recruiters </span>
+            <span className="text-imagine-secondary"> Recruiters </span>
             and
-            <span className="text-imagine-blue"> Seekers</span>
+            <span className="text-imagine-secondary"> Seekers</span>
           </h2>
 
           <div className="grid md:grid-cols-3 gap-10">
@@ -106,8 +106,8 @@ const Landing = () => {
                 className="p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col"
               >
                 <div className="flex items-center mb-4">
-                  <card.icon className="w-6 h-6 mr-2 text-imagine-blue" />
-                  <h3 className="text-l font-bold text-gray-800">
+                  <card.icon className="w-6 h-6 mr-2 text-imagine-secondary" />
+                  <h3 className="text-l font-bold text-imagine-blue">
                     {card.title}
                   </h3>
                 </div>
@@ -149,7 +149,7 @@ const Landing = () => {
 
       <div className="w-full bg-white py-24">
   <div className="max-w-6xl mx-auto px-4">
-    <h2 className="text-4xl font-extrabold text-center mb-16 text-gray-800">
+    <h2 className="text-4xl font-extrabold text-center mb-16 text-imagine-blue">
       AI-Powered Pricing Plans
     </h2>
     <div className="grid md:grid-cols-3 gap-10">
@@ -195,20 +195,20 @@ const Landing = () => {
       ].map((plan, index) => (
         <div key={index} className={`
           p-8 bg-white rounded-2xl shadow-lg transition-all duration-300 transform hover:-translate-y-1
-          ${plan.highlighted ? 'border-2 border-imagine-blue shadow-xl hover:shadow-2xl' : 'hover:shadow-xl'}
+          ${plan.highlighted ? 'border-2 border-imagine-secondary shadow-xl hover:shadow-2xl' : 'hover:shadow-xl'}
           flex flex-col
         `}>
           <div className="flex items-center mb-6">
-            <plan.icon className={`w-8 h-8 mr-3 ${plan.highlighted ? 'text-imagine-blue' : 'text-gray-600'}`} />
+            <plan.icon className={`w-8 h-8 mr-3 ${plan.highlighted ? 'text-imagine-secondary' : 'text-gray-600'}`} />
             <h3 className="text-2xl font-bold text-gray-800">{plan.title}</h3>
           </div>
-          <p className="text-4xl font-extrabold mb-6 text-gray-800">
+          <p className="text-4xl font-extrabold mb-6 text-imagine-blue">
             {plan.price}<span className="text-xl font-normal text-gray-600">/month</span>
           </p>
           <ul className="mb-8 flex-grow space-y-4">
             {plan.features.map((feature, i) => (
               <li key={i} className="flex items-start">
-                <svg className="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-5 h-5 text-imagine-secondary mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                 </svg>
                 <span className="text-gray-600">{feature}</span>
@@ -217,7 +217,7 @@ const Landing = () => {
           </ul>
           <button className={`
             w-full py-4 px-6 rounded-lg font-bold text-lg transition-colors duration-300
-            ${plan.highlighted ? 'bg-imagine-blue text-white hover:bg-blue-600' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}
+            ${plan.highlighted ? 'bg-imagine-blue text-white hover:bg-blue-800' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}
           `}>
             {plan.cta}
           </button>

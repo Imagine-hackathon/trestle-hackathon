@@ -13,6 +13,7 @@ import TotalResponse from "./total-response";
 import JobListing from "./job-listing";
 import { getJobs } from "@/lib/firebase/jobs";
 
+
 export interface ListingResponse {
   response: {
     ratings: {
@@ -109,6 +110,9 @@ export default function Dashboard() {
             </div>
             <div className="w-full lg:w-1/3">
               <TotalResponse />
+            </div>
+            <div className="w-full lg:w-1/3">
+              
             </div>
           </div>
         </div>

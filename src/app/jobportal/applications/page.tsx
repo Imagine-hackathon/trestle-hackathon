@@ -181,7 +181,7 @@ export default function Dashboard() {
                     <TableBody>
                       {table.map((row) => {
                         return (
-                          <TableRow>
+                          <TableRow key={}>
                             <TableCell className="font-medium">
                               User name
                             </TableCell>

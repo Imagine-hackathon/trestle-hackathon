@@ -14,7 +14,7 @@ const Footer = () => {
             <h3 className="text-xl font-bold text-white">ImagineRecruits</h3>
             <p className="text-sm">Revolutionizing job search and recruitment with cutting-edge AI technology.</p>
             <div className="flex space-x-4">
-             <Link href="https://github.com/Imagine-hackathon"> <Button variant="link" className=""> <span className="text-sm">GitHub</span></Button> </Link> 
+             <Link href="https://github.com/Imagine-hackathon"> <Button variant="link" className="text-imagine-secondary"> <span className="text-sm">GitHub</span></Button> </Link> 
             
               
             </div>

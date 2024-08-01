@@ -29,6 +29,7 @@ const config = {
           foreground: "hsl(var(--primary-foreground))",
         },
         'imagine-blue': '#3B4E9D',
+        'imagine-secondary': '#EC603B',
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",

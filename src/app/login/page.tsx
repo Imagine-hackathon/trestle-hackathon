@@ -105,7 +105,7 @@ const userCred = useContext(AuthorizationContext);
       return;
     }
     // Navigate automatically to the dashboard. We don't want to display the signin to someone already signed in if by mistake.
-    router.push(`/dashboard/${user?.uid}`)
+    router.push(`/dashboard`)
   }, [user, userLoading, router]);
 
   return (
