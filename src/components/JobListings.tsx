@@ -22,7 +22,7 @@ export interface JobListingProps {
   type: string;
   salary: number;
   experience: string;
-  tags: { name: string; color: string }[];
+
   description: string[];
   applicants: number;
   timePosted: number;
@@ -118,7 +118,7 @@ export const JobListing = (props: JobListingProps) => {
       </div>
       <div className="flex ">
         {/* Tag  */}
-        {props.tags.map((tag, key) => {
+        {/* {props.tags.map((tag, key) => {
           return (
             <p
               key={key}
@@ -128,7 +128,7 @@ export const JobListing = (props: JobListingProps) => {
               <span>{tag.name}</span>
             </p>
           );
-        })}
+        })} */}
       </div>
       <ul className="flex flex-col py-6">
         {props.description.map((des, key) => {

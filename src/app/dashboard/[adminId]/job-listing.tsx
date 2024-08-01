@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import JobListTableRow from "./table-row";
 import { Jobs, ListingResponse } from "./page";
 type Props = {
-  table: Jobs[];
+  table: { data: Jobs; id: string }[];
 };
 
 const JobListing = ({ table }: Props) => {
@@ -35,31 +35,35 @@ const JobListing = ({ table }: Props) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {table.map((row) => (
-            <TableRow className="bg-accent">
-              <TableCell>
-                <div className="font-medium">{row.role}</div>
-              </TableCell>
-              <TableCell className="hidden sm:table-cell">
-                {row.location}
-              </TableCell>
-              <TableCell className="hidden sm:table-cell">
-                {row.applicants}
-              </TableCell>
-              <TableCell className="hidden md:table-cell">135</TableCell>
-              <TableCell className="text-right">
-                {" "}
-                <Badge
-                  className={`text-xs ${
-                    status == "active" ? "bg-green-600/90" : "bg-red-600/90"
-                  } text-white`}
-                  variant="default"
-                >
-                  {row.status}
-                </Badge>
-              </TableCell>
-            </TableRow>
-          ))}
+          {table.map((job) => {
+            const { data } = job;
+            const row = data;
+            return (
+              <TableRow className="bg-accent">
+                <TableCell>
+                  <div className="font-medium">{row.role}</div>
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  {row.location}
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  {row.applicants}
+                </TableCell>
+                <TableCell className="hidden md:table-cell">135</TableCell>
+                <TableCell className="text-right">
+                  {" "}
+                  <Badge
+                    className={`text-xs ${
+                      status == "active" ? "bg-green-600/90" : "bg-red-600/90"
+                    } text-white`}
+                    variant="default"
+                  >
+                    {row.status}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            );
+          })}
           <JobListTableRow />
           <JobListTableRow />
           <JobListTableRow />

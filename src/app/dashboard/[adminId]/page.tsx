@@ -11,9 +11,9 @@ import Header from "./header";
 import { useEffect, useState } from "react";
 import TotalResponse from "./total-response";
 import JobListing from "./job-listing";
+import { getJobs } from "@/lib/firebase/jobs";
 
 export interface ListingResponse {
-  status: number;
   response: {
     ratings: {
       overallFit: number;
@@ -32,33 +32,42 @@ export interface Jobs {
   location: string;
 }
 export default function Dashboard() {
-  const [table, setTable] = useState<Jobs[] | []>([]);
+  const [table, setTable] = useState<{ data: Jobs; id: string }[] | []>([]);
   const [adminData, setAdmin] = useState({});
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await fetch(
-          "https://image-sharing-api-ten.vercel.app/myunsplash/create"
-        );
-        if (!res.ok) return;
-        const data = await res.json();
-        setTable(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchJobs();
 
-    const getAmin = async () => {
-      try {
-        const res = await fetch("11");
-        if (!res.ok) return;
-        const data = await res.json();
-        setAdmin(data);
-      } catch (error) {
+  useEffect(() => {
+    // const fetchJobs = async () => {
+    //   try {
+    //     const res = await fetch(
+    //       "https://image-sharing-api-ten.vercel.app/myunsplash/create"
+    //     );
+    //     if (!res.ok) return;
+    //     const data = await res.json();
+    //     setTable(data);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
+    // fetchJobs();
+
+    // const getAmin = async () => {
+    //   try {
+    //     const res = await fetch("11");
+    //     if (!res.ok) return;
+    //     const data = await res.json();
+    //     setAdmin(data);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
+    getJobs()
+      .then((res) => {
+        console.log(res);
+        setTable(res);
+      })
+      .catch((error) => {
         console.log(error);
-      }
-    };
+      });
   }, []);
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
