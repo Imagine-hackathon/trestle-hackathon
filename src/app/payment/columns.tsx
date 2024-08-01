@@ -132,8 +132,8 @@ export const columns: ColumnDef<DataTableTypes>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem>Preview resume</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <ShowModal />
+            <DropdownMenuItem asChild>
+              <ShowModal data={payment} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -154,7 +154,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const ShowModal = () => {
+const ShowModal = ({ data }: any) => {
+  console.log(data);
+  const profileData = data;
   return (
     <AlertDialog>
       <AlertDialogTrigger>Open</AlertDialogTrigger>
@@ -162,8 +164,40 @@ const ShowModal = () => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            <div>
+              <h1>{profileData.name}</h1>
+              <p>
+                <strong>Skill Match:</strong> {profileData.skillMatch}
+              </p>
+              <p>
+                <strong>Overall Match:</strong> {profileData.overallMatch}
+              </p>
+              <p>
+                <strong>Experience Match:</strong> {profileData.experienceMatch}
+              </p>
+              <h2>Merits</h2>
+              <ul>
+                {/* @ts-=ignore */}
+                {profileData.merits.map((merit: string, index: number) => (
+                  <li key={index}>{merit}</li>
+                ))}
+              </ul>
+              <h2>Demerits</h2>
+              <ul>
+                {/* @ts-=ignore */}
+
+                {profileData.demerits.map((demerit: string, index: number) => (
+                  <li key={index}>{demerit}</li>
+                ))}
+              </ul>
+              <a
+                href={profileData.pdfLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Download PDF
+              </a>
+            </div>{" "}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
