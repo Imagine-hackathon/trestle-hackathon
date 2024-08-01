@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthContext } from "@/lib/userContext";
 import { getAuthenticatedAppForUser } from "@/lib/firebase/firebaseserver";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,10 @@ export default async function RootLayout({
   return (
     <AuthContext initialUser={currentUser}>
       <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>{children}
+          <Toaster />
+        </body>
+      
       </html>
     </AuthContext>
   );

@@ -1,14 +1,17 @@
 "use client";
+import React, { useState } from 'react';
 import { JobListing } from "@/components/JobListings";
 import Link from "next/link";
-import { useState } from "react";
 import Image from "next/image";
 import Logo from '/public/assets/logo.png'
 import { ModeToggle } from "@/components/ui/ModeToggle";
-import { Circle, Search, X } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Check, Search, X } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface JobListingProps {
   company: string
@@ -18,7 +21,7 @@ interface JobListingProps {
   type: string
   salary: number
   experience: string,
-  tags: {name: string, color: string}[],
+ 
   description: string[],
   applicants: number,
   timePosted: number
@@ -37,47 +40,66 @@ interface FilterListProps {
 
 const FilterList = (props: FilterListProps) => {
   return (
-    <div className="flex flex-col gap-2">
-      <h2 className="font-medium">{props.title}</h2>
-
+    <div className="space-y-2">
+      <h3 className="font-medium text-lg">{props.title}</h3>
       {!props?.search ? (
-        props?.items.map((i, key) => (
-          <div key={key} className="flex items-center gap-2">
-            <input 
-              type="checkbox"
-              checked={props.filters[props.filterName].includes(i)}
-              onChange={(e) => {
-                const newValue = e.target.checked
-                  ? [...props.filters[props.filterName], i]
-                  : props.filters[props.filterName].filter((item: string) => item !== i);
-                props.handleFilterChange(props.filterName, newValue);
-              }}
-            />
-            <label className="text-lg text-gray-500">{i}</label>
-          </div>
-        ))
+        <div className="space-y-1">
+          {props?.items.map((item, key) => (
+            <div key={key} className="flex items-center space-x-2">
+              <Checkbox
+                id={`${props.filterName}-${key}`}
+                checked={props.filters[props.filterName].includes(item)}
+                onCheckedChange={(checked) => {
+                  const newValue = checked
+                    ? [...props.filters[props.filterName], item]
+                    : props.filters[props.filterName].filter((i: string) => i !== item);
+                  props.handleFilterChange(props.filterName, newValue);
+                }}
+              />
+              <label
+                htmlFor={`${props.filterName}-${key}`}
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                {item}
+              </label>
+            </div>
+          ))}
+        </div>
       ) : (
-        <div className="flex flex-col w-full">
-          <div className="w-full flex items-center rounded-lg px-2">
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
             <Input
               type="text"
-              className="px-2 flex-1 py-2"
               placeholder={props?.placeholder}
               value={props.filters[props.filterName] as string}
               onChange={(e) => props.handleFilterChange(props.filterName, e.target.value)}
+              className="flex-1"
             />
-           
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => props.handleFilterChange(props.filterName, '')}
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
           {Array.isArray(props.filters[props.filterName]) && (
-            <div className="flex flex-wrap mt-2 mb-2">
-              {(props.filters[props.filterName] as string[]).map((i, k) => (
-                <div key={k} className="flex flex-row items-center px-2 py-2 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg gap-1 text-white">
-                  <p>{i}</p>
-                  <X onClick={() => {
-                    const newValue = props.filters[props.filterName].filter((item: string) => item !== i);
-                    props.handleFilterChange(props.filterName, newValue);
-                  }}/>
-                </div>
+            <div className="flex flex-wrap gap-2">
+              {(props.filters[props.filterName] as string[]).map((item, key) => (
+                <Badge key={key} variant="secondary" className="text-xs">
+                  {item}
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-4 w-4 p-0 ml-1"
+                    onClick={() => {
+                      const newValue = props.filters[props.filterName].filter((i: string) => i !== item);
+                      props.handleFilterChange(props.filterName, newValue);
+                    }}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </Badge>
               ))}
             </div>
           )}
@@ -155,7 +177,7 @@ const Jobs = () => {
       type: "fulltime",
       salary: 120000,
       experience: "10+",
-      tags: [{ name: "Urgent Recruiting", color: "red" }],
+      
       description: [
         "Establish creative direction and develop concepts together with the product team.",
         "Present ideas and designs effectively.",
@@ -172,7 +194,7 @@ const Jobs = () => {
       type: "fulltime",
       salary: 120000,
       experience: "10+",
-      tags: [{ name: "Urgent Recruiting", color: "red" }],
+      
       description: [
         "Establish creative direction and develop concepts together with the product team.",
         "Present ideas and designs effectively.",
@@ -193,90 +215,66 @@ const Jobs = () => {
   });
 
   return (
-    <div>
-      <header className="container px-4 mx-auto ">
-        <div className="flex justify-between items-center py-4 my-4">
-          <Link href="/" className="hover:cursor-pointer">
-            <Image
-              src={Logo}
-              alt="Logo"
-              className="h-8 w-auto cursor-pointer"
-            />
-          </Link>
-          <ModeToggle />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow-sm">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center py-4">
+            <Link href="/" className="hover:opacity-80 transition-opacity">
+              <Image
+                src={Logo}
+                alt="Logo"
+                className="h-8 w-auto"
+              />
+            </Link>
+            <ModeToggle />
+          </div>
         </div>
       </header>
 
-      <main className="flex flex-row w-full justify-center min-h-screen">
-        <div className="w-full px-3 max-w-[1300px] flex flex-col">
-          <div className="flex flex-col">
-            <h1 className="py-5 text-2xl text-gray-600">All Jobs</h1>
-            <p className="pb-8 text-gray-400">Page 1 of 120 Jobs</p>
-          </div>
-          <div className="flex flex-row w-full gap-5">
-            <div className="flex flex-col gap-4">
-              {filteredJobs.map((i, key) => (
-                <JobListing
-                  company={i.company}
-                  role={i.role}
-                  location={i.location}
-                  jobLocation={i.jobLocation}
-                  type={i.type}
-                  salary={i.salary}
-                  experience={i.experience}
-                  tags={i.tags}
-                  description={i.description}
-                  applicants={i.applicants}
-                  timePosted={i.timePosted}
-                  imageurl={i?.imageurl}
-                  key={key}
-                ></JobListing>
-              ))}
-            </div>
-            <div className="gap-12 flex flex-col flex-1">
-              <Card className={"bg-white p-4 flex flex-col text-gray-400"}>
-                <p className="font-semibold text-lg">Sort By</p>
-                <div className="flex gap-12">
-                  <div
-                    onClick={() => setSortBy("salary")}
-                    className="hover:cursor-pointer flex flex-row items-center gap-3"
-                  >
-                    {
-                      <Circle
-                        size={18}
-                        className={sortBy === "salary" ? "text-imagine-blue" : ""}
-                      ></Circle>
-                    }
-                    Salary
-                  </div>
-                  <div
-                    onClick={() => setSortBy("Date Posted")}
-                    className="hover:cursor-pointer flex flex-row items-center gap-3"
-                  >
-                    {
-                      <Circle
-                        size={18}
-                        className={
-                          sortBy === "Date Posted" ? "text-imagine-blue" : ""
-                        }
-                      ></Circle>
-                    }
-                    Date added
-                  </div>
-                </div>
-              </Card>
-              <Card className={"bg-white p-4 flex flex-col text-gray-400"}>
-                <p className="font-semibold text-lg">Filters</p>
-                <div className="flex flex-col gap-5 py-5">
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="md:w-1/4 space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Filters</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
                 {filtersList.map((filterProps, index) => (
                   <FilterList
                     key={index}
                     {...filterProps}
                   />
                 ))}
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="md:w-3/4 space-y-6">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>All Jobs</CardTitle>
+                <div className="flex items-center space-x-4">
+                  <p className="text-sm text-gray-500">Sort by:</p>
+                  <Select onValueChange={(value) => setSortBy(value as "salary" | "Date Posted" | null)} value={sortBy || undefined}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="salary">Salary</SelectItem>
+                      <SelectItem value="Date Posted">Date Posted</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              </Card>
-            </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-500 mb-4">Showing {filteredJobs.length} of {jobList.length} jobs</p>
+                <div className="space-y-4">
+                  {filteredJobs.map((job, key) => (
+                    <JobListing key={key} {...job} />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>

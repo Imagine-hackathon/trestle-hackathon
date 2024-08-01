@@ -1,128 +1,52 @@
 "use client";
 
 import {
-  Area,
-  AreaChart,
-  Bar,
   BarChart,
-  CartesianGrid,
-  Label,
-  LabelList,
-  Line,
-  LineChart,
-  PolarAngleAxis,
-  RadialBar,
-  RadialBarChart,
-  Rectangle,
-  ReferenceLine,
+  Bar,
   XAxis,
   YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
 } from "recharts";
 
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Separator } from "@/components/ui/separator";
 
-export default function TotalResponse() {
+const data = [
+  { month: 'Jan', postings: 45, applications: 200 },
+  { month: 'Feb', postings: 52, applications: 189 },
+  { month: 'Mar', postings: 48, applications: 220 },
+  { month: 'Apr', postings: 61, applications: 305 },
+  { month: 'May', postings: 55, applications: 290 },
+  { month: 'Jun', postings: 67, applications: 350 },
+];
+
+export default function JobStats() {
   return (
-    <div className=" border  grid  w-full flex-1 sm:flex-[0.45] mx-auto  max-w-6xl p-2 sm:flex-row sm:p-8">
-      <Card className="max-w-md" x-chunk="charts-01-chunk-5">
-        <CardContent className="flex gap-4 p-4">
-          <div className="grid items-center gap-2">
-            <div className="grid flex-1 auto-rows-min gap-0.5">
-              <div className="text-sm text-muted-foreground">Move</div>
-              <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
-                562/600
-                <span className="text-sm font-normal text-muted-foreground">
-                  kcal
-                </span>
-              </div>
-            </div>
-            <div className="grid flex-1 auto-rows-min gap-0.5">
-              <div className="text-sm text-muted-foreground">Exercise</div>
-              <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
-                73/120
-                <span className="text-sm font-normal text-muted-foreground">
-                  min
-                </span>
-              </div>
-            </div>
-            <div className="grid flex-1 auto-rows-min gap-0.5">
-              <div className="text-sm text-muted-foreground">Stand</div>
-              <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
-                8/12
-                <span className="text-sm font-normal text-muted-foreground">
-                  hr
-                </span>
-              </div>
-            </div>
-          </div>
-          <ChartContainer
-            config={{
-              move: {
-                label: "Move",
-                color: "hsl(var(--chart-1))",
-              },
-              exercise: {
-                label: "Exercise",
-                color: "hsl(var(--chart-2))",
-              },
-              stand: {
-                label: "Stand",
-                color: "hsl(var(--chart-3))",
-              },
-            }}
-            className="mx-auto aspect-square w-full max-w-[80%]"
-          >
-            <RadialBarChart
-              margin={{
-                left: -10,
-                right: -10,
-                top: -10,
-                bottom: -10,
-              }}
-              data={[
-                {
-                  activity: "stand",
-                  value: (8 / 12) * 100,
-                  fill: "var(--color-stand)",
-                },
-                {
-                  activity: "exercise",
-                  value: (46 / 60) * 100,
-                  fill: "var(--color-exercise)",
-                },
-                {
-                  activity: "move",
-                  value: (245 / 360) * 100,
-                  fill: "var(--color-move)",
-                },
-              ]}
-              innerRadius="20%"
-              barSize={24}
-              startAngle={90}
-              endAngle={450}
-            >
-              <PolarAngleAxis
-                type="number"
-                domain={[0, 100]}
-                dataKey="value"
-                tick={false}
-              />
-              <RadialBar dataKey="value" background cornerRadius={5} />
-            </RadialBarChart>
-          </ChartContainer>
+    <div className="border w-full max-w-6xl p-2 sm:p-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Job Postings and Applications</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+              <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+              <Tooltip />
+              <Legend />
+              <Bar yAxisId="left" dataKey="postings" fill="#8884d8" name="Job Postings" />
+              <Bar yAxisId="right" dataKey="applications" fill="#82ca9d" name="Applications" />
+            </BarChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
     </div>

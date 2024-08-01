@@ -1,17 +1,16 @@
+import React from 'react';
 import {
   Briefcase,
-  BriefcaseBusiness,
-  Circle,
-  CircleAlert,
   Clock,
-  Clock1,
   DollarSign,
   Dot,
-  MessageCircleWarning,
+  MapPin,
+  Users,
 } from "lucide-react";
 import Image from "next/image";
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { JobApply } from "./JobApply";
 
 export interface JobListingProps {
@@ -22,7 +21,6 @@ export interface JobListingProps {
   type: string;
   salary: number;
   experience: string;
-
   description: string[];
   applicants: number;
   timePosted: number;
@@ -78,77 +76,62 @@ function timeAgo(date: number) {
 
 export const JobListing = (props: JobListingProps) => {
   return (
-    <Card className="w-full flex p-4 flex-col">
-      <div className="flex items-center gap-6">
-        <Image
-          alt="image listing"
-          src={props.imageurl ? props.imageurl : "/next.svg"}
-          width={50}
-          height={50}
-          className="w-20 p-1 h-20 shadow-md rounded-lg border"
-        ></Image>
-        <div className="flex flex-1 justify-between items-start h-full">
-          <div className="flex flex-col items-start">
-            <h1 className="text-gray-500">{props.company}</h1>
-            <p className="text-imagine-blue font-bold text-2xl">{props.role}</p>
-            <p className="text-gray-600">
-              {props.location} | {props.jobLocation} work available
-            </p>
+    <Card className="w-full overflow-hidden transition-all duration-300 hover:shadow-lg">
+      <CardHeader className="pb-2">
+        <div className="flex items-center gap-4">
+          <Image
+            alt={`${props.company} logo`}
+            src={props.imageurl || "/next.svg"}
+            width={60}
+            height={60}
+            className="rounded-lg border p-1 shadow-sm"
+          />
+          <div className="flex-1">
+            <h2 className="text-xl font-semibold text-imagine-blue">{props.role}</h2>
+            <p className="text-gray-600">{props.company}</p>
           </div>
-          <div className="h-full flex justify-start items-start">
-            <p className="text-slate-400">
-              Posted {timeAgo(props.timePosted)}{" "}
-            </p>
+          <Badge variant="secondary" className="text-xs">
+            {timeAgo(props.timePosted)}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="pb-4">
+        <div className="mb-4 flex flex-wrap gap-4 text-sm text-gray-600">
+          <div className="flex items-center gap-2">
+            <MapPin size={18} />
+            <span>{props.location} | {props.jobLocation}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Clock size={18} />
+            <span>{props.type === "fulltime" ? "Full Time" : "Freelance"}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <DollarSign size={18} />
+            <span>${props.salary.toLocaleString("en-US")}/year</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Briefcase size={18} />
+            <span>{props.experience} years experience</span>
           </div>
         </div>
-      </div>
-      <div className="w-full flex items-center py-5 gap-10">
-        <div className="gap-2 flex text-gray-500 items-center">
-          <Clock size={22} className=""></Clock>
-          <p>{props.type === "fulltime" ? "Full Time" : "Freelance"}</p>
-        </div>
-        <div className="gap-2 flex text-gray-500 items-center">
-          <DollarSign size={22} className=""></DollarSign>
-          <p>{props.salary.toLocaleString("en-US")} a year</p>
-        </div>
-        <div className="gap-2 flex text-gray-500 items-center">
-          <BriefcaseBusiness size={22} className="" />
-          <p>{props.experience} years experience</p>
-        </div>
-      </div>
-      <div className="flex ">
-        {/* Tag  */}
-        {/* {props.tags.map((tag, key) => {
-          return (
-            <p
-              key={key}
-              className={`flex text-white pl-1 pr-3 rounded-full py-[3px] font-light text-sm gap-1 items-center bg-${tag.color}-500`}
-            >
-              <CircleAlert />
-              <span>{tag.name}</span>
-            </p>
-          );
-        })} */}
-      </div>
-      <ul className="flex flex-col py-6">
-        {props.description.map((des, key) => {
-          // eslint-disable-next-line react/jsx-key
-          return (
-            <li className="flex items-center -mt-2 text-gray-500" key={key}>
-              <Dot size={40}></Dot>
-              {des}
+        <ul className="space-y-2 text-gray-700">
+          {props.description.map((des, key) => (
+            <li key={key} className="flex items-start">
+              <Dot size={24} className="shrink-0" />
+              <span>{des}</span>
             </li>
-          );
-        })}
-      </ul>
-      <div className="flex flex-row items-center justify-between">
-      <p className="text-slate-400">{props.applicants} applicants</p>
-      <div className="flex items-center gap-6">
-        
+          ))}
+        </ul>
+      </CardContent>
+      <CardFooter className="flex items-center justify-between bg-gray-50 px-6 py-4">
+        <div className="flex items-center gap-2 text-gray-600">
+          <Users size={18} />
+          <span>{props.applicants} applicants</span>
+        </div>
         <JobApply />
-       
-      </div>
-      </div>
+      </CardFooter>
     </Card>
   );
 };
+
+export default JobListing

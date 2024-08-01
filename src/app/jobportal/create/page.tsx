@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, Loader2, Search } from "lucide-react";
+import { ChevronLeft, CircleUser, Loader2 } from "lucide-react";
 
 import {
   Breadcrumb,
@@ -28,9 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-
 import { Textarea } from "@/components/ui/textarea";
-
 import {
   Form,
   FormControl,
@@ -49,8 +47,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Select } from "@radix-ui/react-select";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { addImageTOBucket, addJob } from "@/lib/firebase/jobs";
+import { toast } from "@/components/ui/use-toast";
+import { AuthorizationContext } from "@/lib/userContext";
 
 export type jobPostingSchema = {
   company: string;
@@ -60,11 +60,12 @@ export type jobPostingSchema = {
   salary: string;
   experience: string;
   applicants: string;
-
   imageurl?: string;
   description: string;
+  type: string;
 };
-export default function CreateJob() {
+
+const CreateJob = () => {
   const FormSchema = z.object({
     company: z.string().min(1, { message: "Company name is required" }),
     role: z.string().min(1, { message: "Role is required" }),
@@ -72,34 +73,50 @@ export default function CreateJob() {
     officelocation: z
       .string()
       .min(1, { message: "Office location is required" }),
-    applicants: z.string().min(1, { message: "Applicants is required" }),
-    // timeposted: z.string().min(1, { message: "Time posted is required" }),
+    applicants: z.string().min(1, { message: "Applicants are required" }),
     experience: z.string().min(1, { message: "Experience is required" }),
     description: z.string().min(1, { message: "Description is required" }),
-
-    // imageurl: z.string().optional(),
     type: z.string().min(1, { message: "Type is required" }),
     salary: z.string().min(1, { message: "Salary is required" }),
   });
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
+
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setLoading(true);
     try {
-      if (!file) return;
+      if (!file) {
+        toast({
+          variant: "destructive",
+          description: "Please select an image file",
+        });
+        return;
+      }
       const res = await addImageTOBucket(file);
       console.log(res);
       const ress = await addJob({ ...data, imageurl: res });
       console.log(ress);
+
+      toast({
+        description: "Job successfully submitted!",
+      });
     } catch (error) {
       console.log("Error", error);
+      toast({
+        variant: "destructive",
+        description: "An error occurred while submitting the job",
+      });
     } finally {
       setLoading(false);
     }
   };
+
+  const { user, load } = useContext(AuthorizationContext);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -109,29 +126,16 @@ export default function CreateJob() {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="#">Dashboard</Link>
+                  <Link href="/dashboard/adminId">Dashboard</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="#">Products</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Edit Product</BreadcrumbPage>
+                <BreadcrumbPage>Create Job</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <div className="relative ml-auto flex-1 md:grow-0">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
-          </div>
+          <div className="relative ml-auto flex-1 md:grow-0"></div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -139,13 +143,17 @@ export default function CreateJob() {
                 size="icon"
                 className="overflow-hidden rounded-full"
               >
-                <Image
-                  src="/placeholder-user.jpg"
-                  width={36}
-                  height={36}
-                  alt="Avatar"
-                  className="overflow-hidden rounded-full"
-                />
+                {user?.photoURL ? (
+                  <Image
+                    className="h-10 w-10"
+                    height={50}
+                    width={50}
+                    alt="profile-image"
+                    src={user?.photoURL}
+                  ></Image>
+                ) : (
+                  <CircleUser className="h-5 w-5" />
+                )}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -161,8 +169,7 @@ export default function CreateJob() {
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
-              {/* We will get the previous route from brie */}
-              <Link href={"/"}>
+              <Link href={"/dashboard/adminId"}>
                 <Button variant="outline" size="icon" className="h-7 w-7">
                   <ChevronLeft className="h-4 w-4" />
                   <span className="sr-only">Back</span>
@@ -174,7 +181,7 @@ export default function CreateJob() {
             </div>
             <div className="w-full">
               <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-0">
+                <Card>
                   <CardHeader>
                     <CardTitle>Add Job Post</CardTitle>
                     <CardDescription>
@@ -184,27 +191,23 @@ export default function CreateJob() {
                   <CardContent>
                     <Form {...form}>
                       <form
-                        onSubmit={form.handleSubmit((data) => {
-                          console.log("first");
-                          onSubmit(data as any);
-                        })}
-                        className=" gap-5 flex flex-col"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="gap-5 flex flex-col"
                       >
-                        <div className="flex  gap-4">
+                        <div className="flex gap-4">
                           <FormField
                             control={form.control}
                             name="company"
                             render={({ field }) => (
-                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                              <FormItem className="sm:flex-[0.8] col-span-12">
                                 <FormLabel>Company Name</FormLabel>
                                 <FormControl>
                                   <Input
-                                    className="sm:col-span-3 col-span-12 "
-                                    placeholder="Microsofl Inc"
+                                    className="sm:col-span-3 col-span-12"
+                                    placeholder="Microsoft Inc"
                                     {...field}
                                   />
                                 </FormControl>
-
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -213,27 +216,26 @@ export default function CreateJob() {
                             control={form.control}
                             name="role"
                             render={({ field }) => (
-                              <FormItem className="sm:flex-[0.8] col-span-12 ">
-                                <FormLabel>Role name</FormLabel>
+                              <FormItem className="sm:flex-[0.8] col-span-12">
+                                <FormLabel>Role</FormLabel>
                                 <FormControl>
                                   <Input
-                                    className="sm:col-span-3 col-span-12 "
-                                    placeholder="Frontend developer"
+                                    className="sm:col-span-3 col-span-12"
+                                    placeholder="Frontend Developer"
                                     {...field}
                                   />
                                 </FormControl>
-
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
                         </div>
-                        <div className="flex  gap-4">
+                        <div className="flex gap-4">
                           <FormField
                             control={form.control}
                             name="location"
                             render={({ field }) => (
-                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                              <FormItem className="sm:flex-[0.8] col-span-12">
                                 <FormLabel>Location</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
@@ -245,18 +247,11 @@ export default function CreateJob() {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="remote">
-                                      Remote
-                                    </SelectItem>
-                                    <SelectItem value="onsite">
-                                      On-site
-                                    </SelectItem>
-                                    <SelectItem value="hybrid">
-                                      Hybrid
-                                    </SelectItem>
+                                    <SelectItem value="remote">Remote</SelectItem>
+                                    <SelectItem value="onsite">On-site</SelectItem>
+                                    <SelectItem value="hybrid">Hybrid</SelectItem>
                                   </SelectContent>
                                 </Select>
-
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -265,11 +260,11 @@ export default function CreateJob() {
                             control={form.control}
                             name="officelocation"
                             render={({ field }) => (
-                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                              <FormItem className="sm:flex-[0.8] col-span-12">
                                 <FormLabel>Office Location</FormLabel>
                                 <FormControl>
                                   <Input
-                                    className="sm:col-span-3 col-span-12 "
+                                    className="sm:col-span-3 col-span-12"
                                     placeholder="Accra, Ghana"
                                     {...field}
                                   />
@@ -279,12 +274,12 @@ export default function CreateJob() {
                             )}
                           />
                         </div>
-                        <div className="flex  gap-4">
+                        <div className="flex gap-4">
                           <FormField
                             control={form.control}
                             name="type"
                             render={({ field }) => (
-                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                              <FormItem className="sm:flex-[0.8] col-span-12">
                                 <FormLabel>Work Schedule</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
@@ -296,15 +291,9 @@ export default function CreateJob() {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="Full time">
-                                      Full time
-                                    </SelectItem>
-                                    <SelectItem value="Part time">
-                                      Part time
-                                    </SelectItem>
-                                    <SelectItem value="Contract">
-                                      Contract
-                                    </SelectItem>
+                                    <SelectItem value="full-time">Full-time</SelectItem>
+                                    <SelectItem value="part-time">Part-time</SelectItem>
+                                    <SelectItem value="contract">Contract</SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -315,11 +304,11 @@ export default function CreateJob() {
                             control={form.control}
                             name="applicants"
                             render={({ field }) => (
-                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                              <FormItem className="sm:flex-[0.8] col-span-12">
                                 <FormLabel>Number of Applicants</FormLabel>
                                 <FormControl>
                                   <Input
-                                    className="sm:col-span-3 col-span-12 "
+                                    className="sm:col-span-3 col-span-12"
                                     placeholder="10"
                                     {...field}
                                     type="number"
@@ -330,22 +319,20 @@ export default function CreateJob() {
                             )}
                           />
                         </div>
-
-                        <div className="flex  gap-4">
+                        <div className="flex gap-4">
                           <FormField
                             control={form.control}
                             name="salary"
                             render={({ field }) => (
-                              <FormItem className="sm:flex-[0.8] col-span-12 ">
+                              <FormItem className="sm:flex-[0.8] col-span-12">
                                 <FormLabel>Salary Expectation (USD)</FormLabel>
                                 <FormControl>
                                   <Input
-                                    className="sm:col-span-3 col-span-12 "
+                                    className="sm:col-span-3 col-span-12"
                                     {...field}
                                     type="number"
                                   />
                                 </FormControl>
-
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -354,32 +341,27 @@ export default function CreateJob() {
                             control={form.control}
                             name="experience"
                             render={({ field }) => (
-                              <FormItem className="sm:flex-[0.8] col-span-12 ">
-                                <FormLabel>
-                                  Experience required( in years)
-                                </FormLabel>
+                              <FormItem className="sm:flex-[0.8] col-span-12">
+                                <FormLabel>Experience Required (in years)</FormLabel>
                                 <FormControl>
                                   <Input
-                                    className="sm:col-span-3 col-span-12 "
+                                    className="sm:col-span-3 col-span-12"
                                     placeholder="2 years"
                                     {...field}
                                   />
                                 </FormControl>
-
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
                         </div>
-
-                        <div className="">
+                        <div>
                           <Input
                             id="picture"
                             accept=".jpg, .jpeg, .png"
                             type="file"
                             onChange={(e) => {
-                              e.target.files?.length &&
-                                setFile(e.target.files?.[0]);
+                              e.target.files?.length && setFile(e.target.files?.[0]);
                             }}
                           />
                         </div>
@@ -393,13 +375,11 @@ export default function CreateJob() {
                                 <FormControl>
                                   <Textarea
                                     id="description"
-                                    // defaultValue=""
                                     placeholder="Job description"
                                     className="min-h-32"
                                     {...field}
                                   />
                                 </FormControl>
-
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -414,7 +394,7 @@ export default function CreateJob() {
                           {loading ? (
                             <Loader2 className="animate-spin" />
                           ) : (
-                            "Sumbit"
+                            "Submit"
                           )}
                         </Button>
                       </form>
@@ -428,4 +408,6 @@ export default function CreateJob() {
       </div>
     </div>
   );
-}
+};
+
+export default CreateJob;

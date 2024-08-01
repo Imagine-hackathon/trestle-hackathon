@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, BarChart2, Users, Briefcase } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -60,40 +60,75 @@ export default function Dashboard() {
     //     console.log(error);
     //   }
     // };
+    
+
+
     getJobs()
-      .then((res) => {
-        console.log(res);
-        setTable(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((res) => {
+      console.log(res);
+      setTable(res);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }, []);
+
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar />
-      <div className="flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900">
+          <div className="container mx-auto px-6 py-8">
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-3xl font-semibold text-gray-800 dark:text-white">Dashboard</h1>
+              <Link href="/jobportal/create">
+                <Button className="flex items-center space-x-2 bg-imagine-blue hover:bg-blue-700 text-white">
+                  <PlusCircle className="h-5 w-5" />
+                  <span>Add Job</span>
+                </Button>
+              </Link>
+            </div>
 
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-lg font-semibold md:text-2xl">Dashboard</h1>
+            <div className="mb-8">
+              <Hero />
+            </div>
 
-            <Link href={"/jobportal/create"}>
-              <Button size="sm" className="h-8 gap-1">
-                <PlusCircle className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add Job
-                </span>
-              </Button>
-            </Link>
-          </div>
-          <Hero />
-          <div className="flex gap-2 sm:flex-4 flex-col sm:flex-row">
-            <TotalResponse />
-            <JobListing table={table} />
+            <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+              <StatCard icon={BarChart2} title="Total Applications" value="2,450" />
+              <StatCard icon={Users} title="New Applicants" value="120" />
+              <StatCard icon={Briefcase} title="Open Positions" value="15" />
+              <StatCard icon={PlusCircle} title="Hired This Month" value="23" />
+            </div>
+
+            <div className="flex flex-col lg:flex-row gap-6">
+              <div className="w-full lg:w-2/3">
+                <JobListing table={table} />
+              </div>
+              <div className="w-full lg:w-1/3">
+                <TotalResponse />
+              </div>
+            </div>
           </div>
         </main>
+      </div>
+    </div>
+  );
+}
+
+
+
+function StatCard({ icon: Icon, title, value }) {
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5">
+      <div className="flex items-center">
+        <div className="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-blue-600 bg-blue-100 rounded-full mr-6">
+          <Icon className="h-6 w-6" />
+        </div>
+        <div>
+          <span className="block text-2xl font-bold text-gray-800 dark:text-white">{value}</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400">{title}</span>
+        </div>
       </div>
     </div>
   );

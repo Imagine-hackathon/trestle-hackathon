@@ -21,7 +21,7 @@ import { CircleUser } from "lucide-react";
 const Navbar = () => {
   const { user, loading } = useContext(AuthorizationContext);
   return (
-    <nav className="sticky top-0 py-3 z-[1000]">
+    <nav className=" top-0 py-3 z-[1000]">
       <div className="container pl-4 pr-4 mx-auto relative text-sm">
         <div className="flex justify-between items-center">
           <Link href="/" className="hover:cursor-pointer">
