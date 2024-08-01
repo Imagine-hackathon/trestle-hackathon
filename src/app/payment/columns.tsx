@@ -162,7 +162,7 @@ const ShowModal = ({ data }: any) => {
       <AlertDialogTrigger>Open</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>REVIEW</AlertDialogTitle>
           <AlertDialogDescription>
             <div>
               <h1>{profileData.name}</h1>

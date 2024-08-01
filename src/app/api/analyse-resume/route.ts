@@ -13,7 +13,7 @@ import { ListingResponse } from "@/app/dashboard/page";
 const model = new ChatGoogleGenerativeAI({
     model: "gemini-pro",
     maxOutputTokens: 2048,
-    apiKey: "AIzaSyDbE7e2C0QNq93QsW6giNg-hpPopmM3Ay8",
+    apiKey: process.env.NEXT_ANALYZE_DOCUMENTS_API_KEY
 });
 export async function POST(req: Request) {
     const formData = await req.formData();
