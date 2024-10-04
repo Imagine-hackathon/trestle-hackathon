@@ -10,7 +10,7 @@ export interface DemoPageProps {
 const DemoPage = ({ combinedData }:any) => {
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={combinedData} />
+      <DataTable columns={columns} data={combinedData||[]} />
     </div>
   );
 };
