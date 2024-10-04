@@ -1,6 +1,6 @@
 "use client";
 
-import DemoPage from "@/app/payment/page";
+import DemoPage from "@/app/payment/demopage";
 import { toast } from "@/components/ui/use-toast";
 import {
     AiResponse,
