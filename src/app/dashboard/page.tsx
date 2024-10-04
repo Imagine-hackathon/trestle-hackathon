@@ -81,7 +81,7 @@ export default function Dashboard() {
             <StatCard
               icon={BarChart2}
               title="Total Applications"
-              value={table.length + 6}
+              value={table.length }
             />
             <StatCard
               icon={Users}
@@ -96,16 +96,11 @@ export default function Dashboard() {
             <StatCard icon={PlusCircle} title="Hired This Month" value="0" />
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-6">
-            <div className="w-full lg:w-2/3">
+          <div className="grid grid-cols-1">
+            <div className="w-full">
               <JobListing table={table} />
             </div>
-            <div className="w-full lg:w-1/3">
-              <TotalResponse />
-            </div>
-            <div className="w-full lg:w-1/3">
-              
-            </div>
+
           </div>
         </div>
       </main>

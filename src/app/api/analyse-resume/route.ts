@@ -17,9 +17,10 @@ const model = new ChatGoogleGenerativeAI({
 });
 export async function POST(req: Request) {
     const formData = await req.formData();
+    console.log("read formData")
 
     const cv = formData.get("cv") as Blob;
-
+    console.log("gotten cv file")
     const jd = formData.get("jd");
     const jobId = formData.get("jobId");
 
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
     const loader = new PDFLoader(cv, {
         splitPages: false,
     });
-
+    console.log("read")
     const docs = await loader.load();
     console.log(docs[0].pageContent);
 
@@ -73,12 +74,14 @@ export async function POST(req: Request) {
     const res = await model.invoke([
         { type: "system", content: prompt.content },
     ]);
-
+    console.log("gotten model reponse", res)
     const aiAnalysis = JSON.parse(res?.content as string) as
         | string
         | ListingResponse;
-    await addAIOUTPUt({ applicationId, aiAnalysis, jobId: jobId as string });
 
+
+    await addAIOUTPUt({ applicationId, aiAnalysis, jobId: jobId as string });
+console.log("ai analysis", aiAnalysis)
     return NextResponse.json({
         status: 200,
         response: JSON.parse(res?.content as string),

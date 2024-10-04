@@ -41,14 +41,14 @@ const JobListing = ({ table }: Props) => {
                 <TableCell className="hidden sm:table-cell text-gray-600 dark:text-gray-300">
                   {row.applicants}
                 </TableCell>
-                <TableCell className="hidden md:table-cell text-gray-600 dark:text-gray-300">135</TableCell>
+                <TableCell className="hidden md:table-cell text-gray-600 dark:text-gray-300"></TableCell>
                 <TableCell className="text-right">
                   <Badge
                     className={`text-xs ${
                       row.status === "active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                     } px-2 py-1 rounded-full font-medium`}
                   >
-                    {row.status}
+                    {row.status||"Running"}
                   </Badge>
                 </TableCell>
               </TableRow>

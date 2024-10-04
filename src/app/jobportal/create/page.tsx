@@ -51,6 +51,7 @@ import { useContext, useState } from "react";
 import { addImageTOBucket, addJob } from "@/lib/firebase/jobs";
 import { toast } from "@/components/ui/use-toast";
 import { AuthorizationContext } from "@/lib/userContext";
+import { useRouter } from "next/navigation";
 
 export type jobPostingSchema = {
   company: string;
@@ -86,7 +87,7 @@ const CreateJob = () => {
 
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter()
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setLoading(true);
     try {
@@ -98,13 +99,16 @@ const CreateJob = () => {
         return;
       }
       const res = await addImageTOBucket(file);
+      console.log("added image to bucker")
       console.log(res);
       const ress = await addJob({ ...data, imageurl: res });
+      
       console.log(ress);
 
       toast({
         description: "Job successfully submitted!",
       });
+      router.push("/dashboard")
     } catch (error) {
       console.log("Error", error);
       toast({

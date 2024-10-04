@@ -16,7 +16,7 @@ import { FileText, Target, Rocket, Zap, Cpu, Blocks } from "lucide-react";
 const Landing = () => {
   return (
     <div className="relative w-full flex flex-col items-center justify-center">
-      <div className="h-[80vh] w-full flex flex-col items-center justify-center">
+      <div className="min-h-[80vh] w-full flex flex-col items-center justify-center">
         <div className="relative w-96 h-96 mb-6">
           <Image
             src="/assets/girlPic.png"
@@ -51,9 +51,11 @@ const Landing = () => {
             </SelectContent>
           </Select>
         </div>
+        <Link href="/jobs">
         <Button className="mt-8 w-36 bg-imagine-blue" variant="default">
-          <Link href="/jobs">All Jobs</Link>
+          All Jobs
         </Button>
+        </Link>
       </div>
 
       <div className="w-full py-24 bg-green-200 bg-opacity-10 mt-8">
